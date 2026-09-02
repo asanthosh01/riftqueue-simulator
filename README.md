@@ -1,0 +1,122 @@
+# RiftQueue
+
+RiftQueue is a full-stack discrete-event simulation for studying the tradeoff
+between queue time and match quality in sparse, high-ELO matchmaking pools.
+
+It compares two synthetic matchmaking strategies:
+
+- **Baseline:** an expanding skill window with snake-draft team assignment.
+- **Tail-Aware:** protects scarce players at the edges of the MMR distribution
+  and searches for a lower-cost 5v5 team split.
+
+RiftQueue is inspired by competitive tactical shooters, but it does not use
+Riot Games data, hidden MMR, production rules, or internal infrastructure. All
+players, arrivals, ranks, and results are simulated.
+
+## Current Result
+
+Under the default simulated scenario, Tail-Aware reduced the bad-match rate
+from **39.9% to 19.6%** while adding **9 seconds** to median queue time.
+
+This is a simulation result, not a claim about a production matchmaking system.
+
+## Product Surface
+
+- **Overview:** concise project story and headline findings.
+- **Simulator:** configure population, traffic, queue policy, and matcher.
+- **Experiments:** scenario sweep, ablation, sensitivity, Pareto, oracle, and
+  scale studies.
+- **Saved Runs:** reopen reproducible runs and export JSON or CSV.
+- **Methodology:** assumptions, algorithms, metrics, and interpretation limits.
+
+## Architecture
+
+```mermaid
+flowchart TD
+    A[Seeded player arrivals] --> B[Expanding queue]
+    B --> C{Matcher}
+    C --> D[Baseline]
+    C --> E[Tail-Aware]
+    D --> F[5v5 lobby]
+    E --> F
+    F --> G[Metrics and confidence intervals]
+    G --> H[(D1 saved runs)]
+```
+
+See [`docs/architecture.md`](docs/architecture.md) for the route map, data flow,
+and trust boundaries.
+
+## Technology
+
+- TypeScript, React 19, and Next-compatible routing through Vinext
+- Cloudflare Workers and D1
+- Drizzle ORM
+- Tailwind CSS and Radix UI primitives
+- Node's built-in test runner
+
+## Run Locally
+
+Requirements: Node.js `>=22.13.0`.
+
+```bash
+npm ci
+npm run dev
+```
+
+Open the local URL printed by Vite.
+
+If the local database has not been initialized, apply the existing migration:
+
+```bash
+npx wrangler d1 migrations apply site-creator-d1 --local
+```
+
+## Validate Changes
+
+Linux or Codex cloud:
+
+```bash
+npm run lint
+npm test
+```
+
+macOS or another environment without GNU `timeout`:
+
+```bash
+npm run lint
+npm run test:local
+```
+
+`npm test` uses the bounded Sites build wrapper. `npm run test:local` invokes
+the portable Vinext build command directly.
+
+## Repository Map
+
+```text
+app/                         Routes and API handlers
+components/                  Shared interface and simulation workspace
+lib/matchmaking.ts           Simulation and experimental algorithms
+db/                          D1 schema and access layer
+drizzle/                     Database migrations
+tests/                       Engine, API, route, and UI regression tests
+docs/architecture.md         System architecture and boundaries
+ROADMAP.md                   Planned portfolio and research phases
+```
+
+## Reproducibility
+
+Baseline and Tail-Aware receive the same seeded arrival stream within each
+comparison. The default experiment aggregates eight independent trials of 500
+matches and reports 95% confidence intervals. Saved runs retain their seed and
+scenario settings and can be downloaded as JSON or CSV.
+
+## Project Status
+
+The simulation engine, experimental studies, persistent runs, and five-route UI
+are implemented. The next phase focuses on public-demo safeguards, deployment
+portability, and portfolio documentation. See [`ROADMAP.md`](ROADMAP.md).
+
+## License
+
+No open-source license has been selected yet. All rights reserved until a
+license is added.
