@@ -34,6 +34,14 @@
 - Confidence intervals describe simulated variation; they are not confidence in
   accuracy against Riot's private production environment.
 
+## Local D1 verification
+
+`wrangler.jsonc` defines only the local `DB` binding used to apply the Drizzle
+migrations in `drizzle/`. The `db:migrate:local` and
+`db:inspect:local` package scripts keep their state under ignored `.wrangler/`
+paths and use a placeholder database ID, so they cannot target the hosted D1
+database. Site deployment bindings remain managed by `.openai/hosting.json`.
+
 ## Public-release boundary
 
 The current deployment remains private until experiment creation is rate-limited,

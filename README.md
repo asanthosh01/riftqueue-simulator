@@ -65,11 +65,18 @@ npm run dev
 
 Open the local URL printed by Vite.
 
-If the local database has not been initialized, apply the existing migration:
+Apply and inspect the local D1 database before starting a migration-dependent
+workflow:
 
 ```bash
-npx wrangler d1 migrations apply site-creator-d1 --local
+npm run db:migrate:local
+npm run db:inspect:local
 ```
+
+These commands use the checked-in local Wrangler configuration, the existing
+Drizzle migrations, and ignored `.wrangler/` state. They use a placeholder
+database ID and are intentionally local-only; they do not access a remote D1
+database or change Site deployment settings.
 
 Experiment creation is rate-limited server-side. Configure these Worker secrets
 and variables in the deployment environment (or `.dev.vars` locally):

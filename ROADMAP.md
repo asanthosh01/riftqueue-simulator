@@ -13,13 +13,11 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 - [x] Keep the validated simulation engine unchanged during the information-architecture refactor.
 - [ ] Complete production regression testing and private deployment.
 
-Production-readiness regression status: lint passes and the portable test suite
-passes, but standalone local D1 migration verification is blocked because the
-repository has no Wrangler project configuration declaring `site-creator-d1`.
-The exact next recommended task is to add a checked-in Wrangler configuration or
-project migration script with the D1 binding and project-local runtime paths,
-then apply and inspect every migration locally before requesting private
-deployment approval.
+Production-readiness regression status: local D1 migration verification now uses
+a checked-in Wrangler configuration, the existing Drizzle migrations, and
+project-local ignored state. The exact next recommended task is to configure the
+required production rate-limit secret, then request approval for a private
+deployment and run the same experiment, saved-run, and export checks there.
 
 ## Next phase
 
