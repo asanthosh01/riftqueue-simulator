@@ -21,3 +21,13 @@ export const experimentRuns = sqliteTable(
   },
   (table) => [index("idx_experiment_runs_created_at").on(table.createdAt)],
 );
+
+export const experimentRateLimits = sqliteTable(
+  "experiment_rate_limits",
+  {
+    bucketKey: text("bucket_key").primaryKey(),
+    windowStartedAt: integer("window_started_at").notNull(),
+    requestCount: integer("request_count").notNull(),
+  },
+  (table) => [index("idx_experiment_rate_limits_window").on(table.windowStartedAt)],
+);

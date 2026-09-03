@@ -8,6 +8,10 @@ import {
   runComparison,
   type ComparisonResult,
 } from "@/lib/matchmaking";
+import {
+  getExperimentRateLimitConfiguration,
+  takeExperimentRateLimitSlot,
+} from "@/lib/experiment-rate-limit";
 
 const experimentRequest = z.object({
   population: z.union([
@@ -57,6 +61,40 @@ export async function POST(request: Request) {
             : "The experiment request was not valid JSON.",
       },
       { status: 400 },
+    );
+  }
+
+  let rateLimitConfiguration;
+  try {
+    rateLimitConfiguration = getExperimentRateLimitConfiguration(env);
+  } catch (error) {
+    console.error("Invalid experiment rate limit configuration", error);
+    return json(
+      { error: "Experiment creation is temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const rateLimit = await takeExperimentRateLimitSlot({
+      database: env.DB,
+      request,
+      configuration: rateLimitConfiguration,
+    });
+    if (!rateLimit.allowed) {
+      return json(
+        { error: "Too many experiment requests. Try again later." },
+        {
+          status: 429,
+          headers: { "retry-after": String(rateLimit.retryAfterSeconds) },
+        },
+      );
+    }
+  } catch (error) {
+    console.error("Failed to apply experiment rate limit", error);
+    return json(
+      { error: "Experiment creation is temporarily unavailable." },
+      { status: 503 },
     );
   }
 

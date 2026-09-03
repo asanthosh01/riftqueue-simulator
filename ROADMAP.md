@@ -17,7 +17,7 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 
 ### Public-demo hardening
 
-- [ ] Add server-side rate limiting for anonymous experiment creation.
+- [x] Add server-side rate limiting for anonymous experiment creation.
 - [ ] Add idempotency protection for duplicate run requests.
 - [ ] Scope public saved-run history so visitors do not share one noisy global feed.
 - [ ] Add bounded retention for completed and failed experiment records.

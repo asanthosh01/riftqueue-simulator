@@ -71,6 +71,22 @@ If the local database has not been initialized, apply the existing migration:
 npx wrangler d1 migrations apply site-creator-d1 --local
 ```
 
+Experiment creation is rate-limited server-side. Configure these Worker secrets
+and variables in the deployment environment (or `.dev.vars` locally):
+
+```text
+EXPERIMENT_RATE_LIMIT_SECRET=<long-random-secret>
+EXPERIMENT_RATE_LIMIT_MAX_REQUESTS=3
+EXPERIMENT_RATE_LIMIT_WINDOW_SECONDS=300
+```
+
+The limit and window default to 3 requests per 300 seconds. Missing or invalid
+rate-limit configuration returns `503` rather than running without abuse
+protection. Client addresses are HMAC-derived into an opaque D1 bucket key and
+are never stored or returned. If `CF-Connecting-IP` is absent, requests share
+an `unknown-client` bucket; do not remove that Cloudflare edge header unless
+this shared fallback is acceptable.
+
 ## Validate Changes
 
 Linux or Codex cloud:
