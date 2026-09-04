@@ -20,6 +20,23 @@ and does not model Riot Games' proprietary matchmaking.
   values with its existing 95% confidence interval. For median queue time,
   compute the player-wait median within each trial before aggregation.
 
+## Automated runner
+
+The runner encodes this plan without changing matcher behavior:
+
+```bash
+npm run benchmark:dry-run
+npm run benchmark:run
+```
+
+`benchmark:dry-run` prints the six scenario-policy arms and writes nothing.
+`benchmark:run` executes the fixed workload and writes one deterministic JSON
+report to `outputs/benchmarks/official-benchmarks.json`. That output directory
+is ignored by Git so generated results are reviewed and published separately;
+running the command does not make a claim about a production matchmaking system.
+Use `npm run benchmark:run -- --output path/to/report.json` to choose another
+local destination.
+
 ## Official scenarios
 
 | ID | Scenario | Population | Traffic | Policy | Trials and matches |
