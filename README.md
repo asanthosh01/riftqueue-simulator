@@ -13,6 +13,15 @@ RiftQueue is inspired by competitive tactical shooters, but it does not use
 Riot Games data, hidden MMR, production rules, or internal infrastructure. All
 players, arrivals, ranks, and results are simulated.
 
+## Why RiftQueue
+
+I built RiftQueue after experiencing high-ELO ranked lobbies that could feel
+inconsistent even when their visible averages looked close. It is a synthetic
+way to explore questions about late-night populations, queue-time tradeoffs,
+individual skill spread, and whether Tail-Aware selection improves lobby
+quality. It does not reproduce or make claims about Riot's proprietary
+matchmaking.
+
 ## Current Result
 
 Under the default simulated scenario, Tail-Aware reduced the bad-match rate
@@ -65,11 +74,34 @@ npm run dev
 
 Open the local URL printed by Vite.
 
-If the local database has not been initialized, apply the existing migration:
+Apply and inspect the local D1 database before starting a migration-dependent
+workflow:
 
 ```bash
-npx wrangler d1 migrations apply site-creator-d1 --local
+npm run db:migrate:local
+npm run db:inspect:local
 ```
+
+These commands use the checked-in local Wrangler configuration, the existing
+Drizzle migrations, and ignored `.wrangler/` state. They use a placeholder
+database ID and are intentionally local-only; they do not access a remote D1
+database or change Site deployment settings.
+
+Experiment creation is rate-limited server-side. Configure these Worker secrets
+and variables in the deployment environment (or `.dev.vars` locally):
+
+```text
+EXPERIMENT_RATE_LIMIT_SECRET=<long-random-secret>
+EXPERIMENT_RATE_LIMIT_MAX_REQUESTS=3
+EXPERIMENT_RATE_LIMIT_WINDOW_SECONDS=300
+```
+
+The limit and window default to 3 requests per 300 seconds. Missing or invalid
+rate-limit configuration returns `503` rather than running without abuse
+protection. Client addresses are HMAC-derived into an opaque D1 bucket key and
+are never stored or returned. If `CF-Connecting-IP` is absent, requests share
+an `unknown-client` bucket; do not remove that Cloudflare edge header unless
+this shared fallback is acceptable.
 
 ## Validate Changes
 
@@ -109,6 +141,13 @@ Baseline and Tail-Aware receive the same seeded arrival stream within each
 comparison. The default experiment aggregates eight independent trials of 500
 matches and reports 95% confidence intervals. Saved runs retain their seed and
 scenario settings and can be downloaded as JSON or CSV.
+
+## Official Benchmark Plan
+
+[`docs/benchmarks.md`](docs/benchmarks.md) defines four fixed, synthetic
+scenarios for Peak, Late-night, Overnight, and late-night policy-tradeoff
+comparisons. It specifies reproducible inputs and reporting metrics without
+claiming or publishing production-game results.
 
 ## Project Status
 
