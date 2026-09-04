@@ -14,7 +14,9 @@
     "test": "npm run build && node --test tests/*.test.mjs",
     "test:local": "npm run build:local && node --test tests/*.test.mjs",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "db:migrate:local": "bash scripts/sites-env.sh -- npx wrangler d1 migrations apply DB --local --config wrangler.jsonc --persist-to .wrangler/state",
+    "db:inspect:local": "bash scripts/sites-env.sh -- npx wrangler d1 execute DB --local --config wrangler.jsonc --persist-to .wrangler/state --command \"SELECT name, type FROM sqlite_master WHERE type IN ('table', 'index') AND (name LIKE 'experiment_%' OR name LIKE 'idx_experiment_%') ORDER BY type, name\""
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

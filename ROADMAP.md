@@ -5,13 +5,47 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 
 ## Current phase
 
+### Automated benchmark runner
+
+- [x] Review [PR #3](https://github.com/asanthosh01/riftqueue/pull/3); it is
+  clean and awaiting explicit merge approval.
+- [ ] Build an automated benchmark runner for the four official scenarios in
+  [`docs/benchmarks.md`](docs/benchmarks.md).
+- [ ] Generate reproducible benchmark results from the fixed scenario inputs.
+- [ ] Analyze the results and publish defensible synthetic findings.
+- [ ] Improve the website presentation of the published benchmark findings.
+
+The benchmark plan is complete; the next major engineering phase is automating
+its execution so every official scenario can be rerun consistently. The exact
+next recommended task is to request explicit approval to merge PR #3. After it
+is merged, implement the automated benchmark runner.
+
+## Completed foundation
+
 ### Navigation and route structure
 
 - [x] Create a persistent desktop and mobile navigation shell.
 - [x] Add focused Overview, Simulator, Experiments, Saved Runs, and Methodology routes.
 - [x] Preserve server-backed experiment execution, progress, saved runs, and exports.
 - [x] Keep the validated simulation engine unchanged during the information-architecture refactor.
-- [ ] Complete production regression testing and private deployment.
+
+Production-readiness regression status: local D1 migration verification now uses
+a checked-in Wrangler configuration, the existing Drizzle migrations, and
+project-local ignored state.
+
+Project-story update: the Overview and Methodology now explain the high-ELO
+player motivation behind RiftQueue and state the experiment questions without
+claiming access to proprietary matchmaking.
+
+Benchmark-plan update: [`docs/benchmarks.md`](docs/benchmarks.md) defines four
+official reproducible synthetic scenarios and their reporting protocol.
+
+## Deferred until deployment approval
+
+- [ ] Configure the production rate-limit secret and request approval for a
+  private deployment.
+- [ ] Run experiment creation, saved-run, and export regression checks in the
+  private deployment.
 
 ## Next phase
 
