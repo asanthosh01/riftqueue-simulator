@@ -13,6 +13,15 @@ RiftQueue is inspired by competitive tactical shooters, but it does not use
 Riot Games data, hidden MMR, production rules, or internal infrastructure. All
 players, arrivals, ranks, and results are simulated.
 
+## Why RiftQueue
+
+I built RiftQueue after experiencing high-ELO ranked lobbies that could feel
+inconsistent even when their visible averages looked close. It is a synthetic
+way to explore questions about late-night populations, queue-time tradeoffs,
+individual skill spread, and whether Tail-Aware selection improves lobby
+quality. It does not reproduce or make claims about Riot's proprietary
+matchmaking.
+
 ## Current Result
 
 Under the default simulated scenario, Tail-Aware reduced the bad-match rate

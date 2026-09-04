@@ -19,6 +19,10 @@ project-local ignored state. The exact next recommended task is to configure the
 required production rate-limit secret, then request approval for a private
 deployment and run the same experiment, saved-run, and export checks there.
 
+Project-story update: the Overview and Methodology now explain the high-ELO
+player motivation behind RiftQueue and state the experiment questions without
+claiming access to proprietary matchmaking.
+
 ## Next phase
 
 ### Public-demo hardening
