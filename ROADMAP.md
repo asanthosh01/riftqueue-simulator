@@ -7,7 +7,8 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 
 ### Automated benchmark runner
 
-- [ ] Review and complete the current pull request before starting the runner.
+- [x] Review [PR #3](https://github.com/asanthosh01/riftqueue/pull/3); it is
+  clean and awaiting explicit merge approval.
 - [ ] Build an automated benchmark runner for the four official scenarios in
   [`docs/benchmarks.md`](docs/benchmarks.md).
 - [ ] Generate reproducible benchmark results from the fixed scenario inputs.
@@ -16,8 +17,8 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 
 The benchmark plan is complete; the next major engineering phase is automating
 its execution so every official scenario can be rerun consistently. The exact
-next recommended task is to review and complete the current pull request, then
-implement the automated benchmark runner.
+next recommended task is to request explicit approval to merge PR #3. After it
+is merged, implement the automated benchmark runner.
 
 ## Completed foundation
 
