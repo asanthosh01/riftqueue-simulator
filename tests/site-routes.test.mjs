@@ -22,6 +22,14 @@ const expectedRoutes = [
   ["/methodology", "HOW RIFTQUEUE WORKS"],
 ];
 
+const expectedRouteContent = {
+  "/": ["Why I built RiftQueue", "not a reconstruction of"],
+  "/methodology": [
+    "EXPERIMENT QUESTIONS",
+    "Why do late-night high-ELO lobbies feel inconsistent\\?",
+  ],
+};
+
 test("renders every primary route with persistent navigation", async () => {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
@@ -48,6 +56,9 @@ test("renders every primary route with persistent navigation", async () => {
     assert.equal(response.status, 200, `${route} should render successfully`);
     const html = await response.text();
     assert.match(html, new RegExp(heading.replace(/[?]/g, "\\?")));
+    for (const content of expectedRouteContent[route] ?? []) {
+      assert.match(html, new RegExp(content));
+    }
     for (const destination of [
       "/simulator",
       "/experiments",

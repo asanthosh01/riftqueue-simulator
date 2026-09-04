@@ -118,6 +118,21 @@ export default function OverviewPage() {
           ))}
         </section>
 
+        <section className="mt-6 border border-border bg-card/85 p-5 sm:p-6">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Why I built RiftQueue</p>
+          <h2 className="display-type mt-2 text-2xl sm:text-3xl">WHEN A LOBBY LOOKS FAIR BUT DOESN&apos;T FEEL FAIR</h2>
+          <p className="mt-4 max-w-4xl text-sm leading-7 text-muted-foreground sm:text-base">
+            As a high-ELO player, I&apos;ve experienced ranked lobbies that look balanced at a glance but feel
+            inconsistent once the round starts: one player is far outside the rest of the lobby, or the queue
+            compromise is hard to see in the team averages. RiftQueue gives me a controlled way to examine
+            those tradeoffs. It is a synthetic model for asking better questions, not a reconstruction of
+            Riot&apos;s proprietary matchmaking.
+          </p>
+          <Link href="/methodology" className="mt-5 inline-flex items-center gap-2 text-sm font-black uppercase tracking-wide text-primary hover:underline">
+            See the experiment questions <ArrowRight className="size-4" />
+          </Link>
+        </section>
+
         <section className="mt-6 border border-border bg-card/85">
           <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border bg-[#111f29] px-5 py-4 sm:px-6">
             <div>

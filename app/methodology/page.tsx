@@ -21,6 +21,14 @@ const stages = [
   { icon: Scale, title: "Team assignment", text: "Snake balancing provides the baseline. The optimized balancer searches legal 5v5 splits and minimizes team-average MMR gap." },
 ];
 
+const experimentQuestions = [
+  "Why do late-night high-ELO lobbies feel inconsistent?",
+  "How much longer must players wait for a tighter lobby?",
+  "Can low team-average MMR gap still hide a bad individual skill spread?",
+  "At what population level does competitive integrity degrade?",
+  "Does Tail-Aware improve lobby quality, or only trade it for longer queue times?",
+];
+
 export default function MethodologyPage() {
   return (
     <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
@@ -51,6 +59,33 @@ export default function MethodologyPage() {
               </article>
             );
           })}
+        </section>
+
+        <section className="mt-6 grid gap-4 lg:grid-cols-[.8fr_1.2fr]">
+          <article className="border border-border bg-card/85 p-5 sm:p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Why I built RiftQueue</p>
+            <h2 className="display-type mt-2 text-2xl">A PLAYER&apos;S QUESTION, NOT A PRODUCTION CLAIM</h2>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              I built this after playing high-ELO ranked lobbies that could feel uneven even when the visible
+              averages looked close. The goal is to make those experiences discussable with controlled,
+              synthetic scenarios. RiftQueue does not reproduce Riot&apos;s proprietary matchmaking or establish
+              what its production system does.
+            </p>
+          </article>
+          <section className="border border-border bg-[#0a151d]/90">
+            <div className="border-b border-border bg-[#111f29] px-5 py-4 sm:px-6">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Research prompts</p>
+              <h2 className="display-type mt-1 text-2xl sm:text-3xl">EXPERIMENT QUESTIONS</h2>
+            </div>
+            <ol className="divide-y divide-border">
+              {experimentQuestions.map((question, index) => (
+                <li key={question} className="flex gap-4 px-5 py-4 sm:px-6">
+                  <span className="font-mono text-sm text-primary">0{index + 1}</span>
+                  <p className="text-sm leading-6 text-muted-foreground">{question}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
         </section>
 
         <section className="mt-6 border border-border bg-card/85">
