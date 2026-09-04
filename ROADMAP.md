@@ -23,6 +23,11 @@ Project-story update: the Overview and Methodology now explain the high-ELO
 player motivation behind RiftQueue and state the experiment questions without
 claiming access to proprietary matchmaking.
 
+Benchmark-plan update: [`docs/benchmarks.md`](docs/benchmarks.md) defines four
+official reproducible synthetic scenarios and their reporting protocol. The
+exact next recommended task remains configuring the production rate-limit
+secret before requesting approval for private deployment regression checks.
+
 ## Next phase
 
 ### Public-demo hardening

@@ -142,6 +142,13 @@ comparison. The default experiment aggregates eight independent trials of 500
 matches and reports 95% confidence intervals. Saved runs retain their seed and
 scenario settings and can be downloaded as JSON or CSV.
 
+## Official Benchmark Plan
+
+[`docs/benchmarks.md`](docs/benchmarks.md) defines four fixed, synthetic
+scenarios for Peak, Late-night, Overnight, and late-night policy-tradeoff
+comparisons. It specifies reproducible inputs and reporting metrics without
+claiming or publishing production-game results.
+
 ## Project Status
 
 The simulation engine, experimental studies, persistent runs, and five-route UI
