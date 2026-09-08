@@ -55,6 +55,9 @@ At the end of every completed task:
 7. Never merge or deploy without the user's explicit approval.
 8. Never invent simulation results or claim RiftQueue reproduces Riot's
    proprietary matchmaking.
+9. Do not create a status-only pull request after a merge. Record roadmap
+   status in the active feature pull request or the next substantive feature
+   pull request instead.
 
 Keep explanations beginner-friendly and state what each technical change
 accomplishes in plain English.
