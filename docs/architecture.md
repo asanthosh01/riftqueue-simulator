@@ -20,10 +20,12 @@
 4. Snake or optimized balancing divides ten selected players into two teams of five.
 5. The engine records queue time, lobby spread, team gap, and bad-match outcomes.
 6. Eight independent trials are aggregated into means and 95% confidence intervals.
-7. `POST /api/experiments` applies a configurable, fixed-window rate limit before
+7. The local benchmark runner calls the same experiment suite for the official
+   scenario arms and writes a deterministic JSON report outside version control.
+8. `POST /api/experiments` applies a configurable, fixed-window rate limit before
    creating a run. D1 stores only an HMAC-derived client bucket key, never a raw
    client address; listing, reopening, and download routes are not rate-limited.
-8. Server routes stream progress, persist completed experiment records in D1, and
+9. Server routes stream progress, persist completed experiment records in D1, and
    generate JSON or CSV exports.
 
 ## Trust boundaries
