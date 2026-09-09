@@ -37,6 +37,17 @@ running the command does not make a claim about a production matchmaking system.
 Use `npm run benchmark:run -- --output path/to/report.json` to choose another
 local destination.
 
+### Arrival-consumption field
+
+`playersGenerated` is a legacy result-field name. Its value is the number of
+synthetic arrivals consumed before the target number of matches was completed;
+it is not the total number of arrivals pre-generated for the trial. The paired
+validation artifact labels this value `arrivalsConsumedBeforeTargetMatches`.
+
+Paired validation differences use a two-sided 95% Student's t interval across
+the eight locked trials. This is separate from the existing aggregate metric
+intervals.
+
 ## Official scenarios
 
 | ID | Scenario | Population | Traffic | Policy | Trials and matches |

@@ -1,0 +1,2638 @@
+{
+  "schemaVersion": 1,
+  "description": "Synthetic paired-trial validation output; it contains no production matchmaking conclusions.",
+  "baseSeed": 20260904,
+  "runsPerArm": 8,
+  "matchesPerRun": 500,
+  "officialArms": [
+    {
+      "id": "peak-balanced",
+      "scenarioId": "peak-balanced",
+      "label": "Peak population / Balanced policy",
+      "population": 100,
+      "traffic": "peak",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "pairedDifferenceConvention": "Tail-Aware minus Baseline",
+      "trials": [
+        {
+          "trial": 1,
+          "seed": 20260904,
+          "baseline": {
+            "medianQueueSeconds": 28.379380891044548,
+            "lobbySpread": 203.994,
+            "teamGap": 9.280800000000013,
+            "badMatchRate": 12.4,
+            "arrivalsConsumedBeforeTargetMatches": 5012
+          },
+          "adaptive": {
+            "medianQueueSeconds": 32.86971129113681,
+            "lobbySpread": 163.222,
+            "teamGap": 0.35599999999999593,
+            "badMatchRate": 6,
+            "arrivalsConsumedBeforeTargetMatches": 5012
+          }
+        },
+        {
+          "trial": 2,
+          "seed": 20268823,
+          "baseline": {
+            "medianQueueSeconds": 27.032694300572985,
+            "lobbySpread": 202.224,
+            "teamGap": 8.631199999999996,
+            "badMatchRate": 10.4,
+            "arrivalsConsumedBeforeTargetMatches": 5009
+          },
+          "adaptive": {
+            "medianQueueSeconds": 31.547871657775772,
+            "lobbySpread": 163.184,
+            "teamGap": 0.5280000000000132,
+            "badMatchRate": 6.2,
+            "arrivalsConsumedBeforeTargetMatches": 5011
+          }
+        },
+        {
+          "trial": 3,
+          "seed": 20276742,
+          "baseline": {
+            "medianQueueSeconds": 26.94536371992399,
+            "lobbySpread": 205.276,
+            "teamGap": 9.50879999999999,
+            "badMatchRate": 12.2,
+            "arrivalsConsumedBeforeTargetMatches": 5012
+          },
+          "adaptive": {
+            "medianQueueSeconds": 31.803252974446195,
+            "lobbySpread": 164.348,
+            "teamGap": 0.43039999999999734,
+            "badMatchRate": 6,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          }
+        },
+        {
+          "trial": 4,
+          "seed": 20284661,
+          "baseline": {
+            "medianQueueSeconds": 28.355285297017645,
+            "lobbySpread": 204.128,
+            "teamGap": 9.494399999999985,
+            "badMatchRate": 11.600000000000001,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          },
+          "adaptive": {
+            "medianQueueSeconds": 32.82519948394747,
+            "lobbySpread": 163.94,
+            "teamGap": 0.3976000000000026,
+            "badMatchRate": 6,
+            "arrivalsConsumedBeforeTargetMatches": 5012
+          }
+        },
+        {
+          "trial": 5,
+          "seed": 20292580,
+          "baseline": {
+            "medianQueueSeconds": 27.688046148345165,
+            "lobbySpread": 206.668,
+            "teamGap": 9.458799999999988,
+            "badMatchRate": 12.6,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "adaptive": {
+            "medianQueueSeconds": 32.78808121288512,
+            "lobbySpread": 162.064,
+            "teamGap": 0.41919999999999435,
+            "badMatchRate": 6.2,
+            "arrivalsConsumedBeforeTargetMatches": 5014
+          }
+        },
+        {
+          "trial": 6,
+          "seed": 20300499,
+          "baseline": {
+            "medianQueueSeconds": 27.980083657333125,
+            "lobbySpread": 206.214,
+            "teamGap": 9.363200000000003,
+            "badMatchRate": 13.8,
+            "arrivalsConsumedBeforeTargetMatches": 5006
+          },
+          "adaptive": {
+            "medianQueueSeconds": 31.92475462010043,
+            "lobbySpread": 165.282,
+            "teamGap": 0.4435999999999981,
+            "badMatchRate": 7.199999999999999,
+            "arrivalsConsumedBeforeTargetMatches": 5006
+          }
+        },
+        {
+          "trial": 7,
+          "seed": 20308418,
+          "baseline": {
+            "medianQueueSeconds": 26.95574484525787,
+            "lobbySpread": 205.042,
+            "teamGap": 9.306799999999999,
+            "badMatchRate": 10,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 32.20318027718167,
+            "lobbySpread": 165.602,
+            "teamGap": 0.5052000000000112,
+            "badMatchRate": 5,
+            "arrivalsConsumedBeforeTargetMatches": 5014
+          }
+        },
+        {
+          "trial": 8,
+          "seed": 20316337,
+          "baseline": {
+            "medianQueueSeconds": 27.84328508424676,
+            "lobbySpread": 205.928,
+            "teamGap": 9.346799999999995,
+            "badMatchRate": 13.600000000000001,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "adaptive": {
+            "medianQueueSeconds": 31.997237560193753,
+            "lobbySpread": 165.296,
+            "teamGap": 0.4543999999999951,
+            "badMatchRate": 5.800000000000001,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          }
+        }
+      ],
+      "pairedDifferences": {
+        "queueSeconds": {
+          "mean": 4.597425641740642,
+          "confidence": {
+            "low": 4.223456833191025,
+            "high": 4.971394450290259
+          },
+          "trialDifferences": [
+            4.490330400092262,
+            4.515177357202788,
+            4.857889254522206,
+            4.469914186929827,
+            5.100035064539952,
+            3.9446709627673044,
+            5.247435431923805,
+            4.153952475946994
+          ]
+        },
+        "spread": {
+          "mean": -40.817,
+          "confidence": {
+            "low": -42.22514224500505,
+            "high": -39.40885775499495
+          },
+          "trialDifferences": [
+            -40.77199999999999,
+            -39.03999999999999,
+            -40.928,
+            -40.18799999999999,
+            -44.60400000000001,
+            -40.93199999999999,
+            -39.44,
+            -40.632000000000005
+          ]
+        },
+        "teamGap": {
+          "mean": -8.857049999999994,
+          "confidence": {
+            "low": -9.125386527339119,
+            "high": -8.588713472660869
+          },
+          "trialDifferences": [
+            -8.924800000000017,
+            -8.103199999999983,
+            -9.078399999999993,
+            -9.096799999999982,
+            -9.039599999999993,
+            -8.919600000000004,
+            -8.801599999999988,
+            -8.8924
+          ]
+        },
+        "badMatchRate": {
+          "mean": -6.025,
+          "confidence": {
+            "low": -6.938503800865891,
+            "high": -5.11149619913411
+          },
+          "trialDifferences": [
+            -6.4,
+            -4.2,
+            -6.199999999999999,
+            -5.600000000000001,
+            -6.3999999999999995,
+            -6.600000000000001,
+            -5,
+            -7.800000000000001
+          ]
+        }
+      }
+    },
+    {
+      "id": "late-balanced",
+      "scenarioId": "late-balanced",
+      "label": "Late-night population / Balanced policy",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "pairedDifferenceConvention": "Tail-Aware minus Baseline",
+      "trials": [
+        {
+          "trial": 1,
+          "seed": 20260904,
+          "baseline": {
+            "medianQueueSeconds": 64.45651695977449,
+            "lobbySpread": 320.77,
+            "teamGap": 14.480000000000015,
+            "badMatchRate": 58.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "adaptive": {
+            "medianQueueSeconds": 75.51012777198048,
+            "lobbySpread": 271.372,
+            "teamGap": 0.7948000000000047,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5006
+          }
+        },
+        {
+          "trial": 2,
+          "seed": 20268823,
+          "baseline": {
+            "medianQueueSeconds": 59.34652120039391,
+            "lobbySpread": 321.094,
+            "teamGap": 15.15040000000001,
+            "badMatchRate": 61.8,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          },
+          "adaptive": {
+            "medianQueueSeconds": 71.4009605062929,
+            "lobbySpread": 272.2,
+            "teamGap": 0.7680000000000096,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          }
+        },
+        {
+          "trial": 3,
+          "seed": 20276742,
+          "baseline": {
+            "medianQueueSeconds": 62.76191230608674,
+            "lobbySpread": 321.484,
+            "teamGap": 15.036000000000003,
+            "badMatchRate": 62.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 72.97424773349485,
+            "lobbySpread": 271.482,
+            "teamGap": 0.8888000000000029,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 4,
+          "seed": 20284661,
+          "baseline": {
+            "medianQueueSeconds": 64.31746869354538,
+            "lobbySpread": 328.188,
+            "teamGap": 15.0768,
+            "badMatchRate": 64.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 74.98783991253367,
+            "lobbySpread": 271.658,
+            "teamGap": 0.6631999999999935,
+            "badMatchRate": 34.2,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          }
+        },
+        {
+          "trial": 5,
+          "seed": 20292580,
+          "baseline": {
+            "medianQueueSeconds": 63.26206991563231,
+            "lobbySpread": 325.898,
+            "teamGap": 15.503200000000023,
+            "badMatchRate": 60.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "adaptive": {
+            "medianQueueSeconds": 72.53414144468479,
+            "lobbySpread": 275.734,
+            "teamGap": 0.9027999999999943,
+            "badMatchRate": 33.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 6,
+          "seed": 20300499,
+          "baseline": {
+            "medianQueueSeconds": 62.38739103512489,
+            "lobbySpread": 320.856,
+            "teamGap": 14.9,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "adaptive": {
+            "medianQueueSeconds": 71.67131206297563,
+            "lobbySpread": 276.872,
+            "teamGap": 0.7183999999999919,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          }
+        },
+        {
+          "trial": 7,
+          "seed": 20308418,
+          "baseline": {
+            "medianQueueSeconds": 60.59821347988691,
+            "lobbySpread": 324.934,
+            "teamGap": 15.201999999999993,
+            "badMatchRate": 62.6,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 74.03910678128159,
+            "lobbySpread": 271.904,
+            "teamGap": 0.7835999999999976,
+            "badMatchRate": 33.6,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          }
+        },
+        {
+          "trial": 8,
+          "seed": 20316337,
+          "baseline": {
+            "medianQueueSeconds": 62.61411047125148,
+            "lobbySpread": 324.434,
+            "teamGap": 14.494800000000014,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "adaptive": {
+            "medianQueueSeconds": 74.2305135674269,
+            "lobbySpread": 272.992,
+            "teamGap": 0.6928000000000029,
+            "badMatchRate": 36.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          }
+        }
+      ],
+      "pairedDifferences": {
+        "queueSeconds": {
+          "mean": 10.950505714871838,
+          "confidence": {
+            "low": 9.764094466540495,
+            "high": 12.13691696320318
+          },
+          "trialDifferences": [
+            11.053610812205989,
+            12.054439305898995,
+            10.212335427408107,
+            10.670371218988294,
+            9.272071529052482,
+            9.283921027850738,
+            13.44089330139468,
+            11.616403096175418
+          ]
+        },
+        "spread": {
+          "mean": -50.430499999999995,
+          "confidence": {
+            "low": -53.432402128593246,
+            "high": -47.428597871406744
+          },
+          "trialDifferences": [
+            -49.39799999999997,
+            -48.894000000000005,
+            -50.00199999999995,
+            -56.52999999999997,
+            -50.164000000000044,
+            -43.98399999999998,
+            -53.03000000000003,
+            -51.44200000000001
+          ]
+        },
+        "teamGap": {
+          "mean": -14.203850000000006,
+          "confidence": {
+            "low": -14.47077344984657,
+            "high": -13.936926550153443
+          },
+          "trialDifferences": [
+            -13.68520000000001,
+            -14.3824,
+            -14.1472,
+            -14.413600000000008,
+            -14.600400000000029,
+            -14.181600000000008,
+            -14.418399999999995,
+            -13.80200000000001
+          ]
+        },
+        "badMatchRate": {
+          "mean": -26.375,
+          "confidence": {
+            "low": -28.326125,
+            "high": -24.423875
+          },
+          "trialDifferences": [
+            -23.6,
+            -24.799999999999997,
+            -27.000000000000007,
+            -30.200000000000003,
+            -26.999999999999993,
+            -24.6,
+            -29,
+            -24.800000000000004
+          ]
+        }
+      }
+    },
+    {
+      "id": "overnight-balanced",
+      "scenarioId": "overnight-balanced",
+      "label": "Overnight population / Balanced policy",
+      "population": 25,
+      "traffic": "overnight",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "pairedDifferenceConvention": "Tail-Aware minus Baseline",
+      "trials": [
+        {
+          "trial": 1,
+          "seed": 20260904,
+          "baseline": {
+            "medianQueueSeconds": 218.9956329280394,
+            "lobbySpread": 435.136,
+            "teamGap": 22.742799999999985,
+            "badMatchRate": 92,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 227.4659285164089,
+            "lobbySpread": 428.056,
+            "teamGap": 1.1548000000000151,
+            "badMatchRate": 91.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 2,
+          "seed": 20268823,
+          "baseline": {
+            "medianQueueSeconds": 201.24448958033463,
+            "lobbySpread": 427.764,
+            "teamGap": 23.370799999999996,
+            "badMatchRate": 90.8,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 208.3972366724338,
+            "lobbySpread": 421.356,
+            "teamGap": 1.1404000000000087,
+            "badMatchRate": 90.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 3,
+          "seed": 20276742,
+          "baseline": {
+            "medianQueueSeconds": 217.35299633504474,
+            "lobbySpread": 416.672,
+            "teamGap": 22.015200000000004,
+            "badMatchRate": 89.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 221.97266449694143,
+            "lobbySpread": 413.232,
+            "teamGap": 1.1096000000000117,
+            "badMatchRate": 88.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 4,
+          "seed": 20284661,
+          "baseline": {
+            "medianQueueSeconds": 206.51020753243938,
+            "lobbySpread": 434.29,
+            "teamGap": 23.948799999999984,
+            "badMatchRate": 94.19999999999999,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 214.77373724026256,
+            "lobbySpread": 425.63,
+            "teamGap": 1.2168,
+            "badMatchRate": 92.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 5,
+          "seed": 20292580,
+          "baseline": {
+            "medianQueueSeconds": 215.23532843879366,
+            "lobbySpread": 438.392,
+            "teamGap": 24.5404,
+            "badMatchRate": 92.60000000000001,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 221.14206716548324,
+            "lobbySpread": 428.722,
+            "teamGap": 1.1316000000000022,
+            "badMatchRate": 91.60000000000001,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 6,
+          "seed": 20300499,
+          "baseline": {
+            "medianQueueSeconds": 210.02167100380757,
+            "lobbySpread": 433.256,
+            "teamGap": 23.633600000000015,
+            "badMatchRate": 92,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 216.46998670892208,
+            "lobbySpread": 428.828,
+            "teamGap": 1.123199999999993,
+            "badMatchRate": 91.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 7,
+          "seed": 20308418,
+          "baseline": {
+            "medianQueueSeconds": 210.53682640845363,
+            "lobbySpread": 426.402,
+            "teamGap": 22.2932,
+            "badMatchRate": 92.80000000000001,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 218.3113976054119,
+            "lobbySpread": 420.954,
+            "teamGap": 0.98600000000001,
+            "badMatchRate": 92.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 8,
+          "seed": 20316337,
+          "baseline": {
+            "medianQueueSeconds": 218.32054121315014,
+            "lobbySpread": 429.14,
+            "teamGap": 23.366,
+            "badMatchRate": 89.8,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 224.1855216024851,
+            "lobbySpread": 423.38,
+            "teamGap": 1.1819999999999808,
+            "badMatchRate": 89.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        }
+      ],
+      "pairedDifferences": {
+        "queueSeconds": {
+          "mean": 6.812605821035731,
+          "confidence": {
+            "low": 5.692816898083342,
+            "high": 7.932394743988121
+          },
+          "trialDifferences": [
+            8.470295588369481,
+            7.152747092099162,
+            4.619668161896698,
+            8.263529707823182,
+            5.906738726689582,
+            6.44831570511451,
+            7.774571196958277,
+            5.86498038933496
+          ]
+        },
+        "spread": {
+          "mean": -6.361750000000008,
+          "confidence": {
+            "low": -8.099017672626076,
+            "high": -4.624482327373939
+          },
+          "trialDifferences": [
+            -7.080000000000041,
+            -6.4080000000000155,
+            -3.4399999999999977,
+            -8.660000000000025,
+            -9.670000000000016,
+            -4.427999999999997,
+            -5.447999999999979,
+            -5.759999999999991
+          ]
+        },
+        "teamGap": {
+          "mean": -22.108299999999996,
+          "confidence": {
+            "low": -22.7877111087123,
+            "high": -21.42888889128769
+          },
+          "trialDifferences": [
+            -21.58799999999997,
+            -22.230399999999985,
+            -20.905599999999993,
+            -22.731999999999985,
+            -23.4088,
+            -22.510400000000022,
+            -21.307199999999987,
+            -22.18400000000002
+          ]
+        },
+        "badMatchRate": {
+          "mean": -0.8499999999999961,
+          "confidence": {
+            "low": -1.266880667663329,
+            "high": -0.43311933233666317
+          },
+          "trialDifferences": [
+            -0.7999999999999972,
+            -0.5999999999999943,
+            -0.7999999999999972,
+            -1.9999999999999858,
+            -1,
+            -0.5999999999999943,
+            -0.6000000000000085,
+            -0.3999999999999915
+          ]
+        }
+      }
+    },
+    {
+      "id": "late-policy-tradeoff-fast",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "fast",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "pairedDifferenceConvention": "Tail-Aware minus Baseline",
+      "trials": [
+        {
+          "trial": 1,
+          "seed": 20260904,
+          "baseline": {
+            "medianQueueSeconds": 49.61278931986453,
+            "lobbySpread": 420.134,
+            "teamGap": 21.4488,
+            "badMatchRate": 89,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          },
+          "adaptive": {
+            "medianQueueSeconds": 52.54521868452139,
+            "lobbySpread": 395.834,
+            "teamGap": 1.0519999999999978,
+            "badMatchRate": 86.8,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          }
+        },
+        {
+          "trial": 2,
+          "seed": 20268823,
+          "baseline": {
+            "medianQueueSeconds": 45.28097625752707,
+            "lobbySpread": 413.408,
+            "teamGap": 21.993200000000012,
+            "badMatchRate": 87.6,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          },
+          "adaptive": {
+            "medianQueueSeconds": 48.02093053820272,
+            "lobbySpread": 386.588,
+            "teamGap": 0.9724000000000065,
+            "badMatchRate": 82.8,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          }
+        },
+        {
+          "trial": 3,
+          "seed": 20276742,
+          "baseline": {
+            "medianQueueSeconds": 48.932792949191935,
+            "lobbySpread": 408.95,
+            "teamGap": 21.396799999999992,
+            "badMatchRate": 89.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 51.101627483352786,
+            "lobbySpread": 389.246,
+            "teamGap": 1.0463999999999956,
+            "badMatchRate": 86,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 4,
+          "seed": 20284661,
+          "baseline": {
+            "medianQueueSeconds": 47.06978661223002,
+            "lobbySpread": 419.356,
+            "teamGap": 22.190399999999986,
+            "badMatchRate": 91.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 50.63286897513899,
+            "lobbySpread": 391.146,
+            "teamGap": 1.048799999999985,
+            "badMatchRate": 86,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 5,
+          "seed": 20292580,
+          "baseline": {
+            "medianQueueSeconds": 48.85610930943585,
+            "lobbySpread": 427.532,
+            "teamGap": 23.28600000000003,
+            "badMatchRate": 90.60000000000001,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 51.66812657499395,
+            "lobbySpread": 397.99,
+            "teamGap": 0.9836000000000049,
+            "badMatchRate": 87.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 6,
+          "seed": 20300499,
+          "baseline": {
+            "medianQueueSeconds": 47.306922256548205,
+            "lobbySpread": 417.978,
+            "teamGap": 21.24880000000001,
+            "badMatchRate": 89.8,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 50.7191272141572,
+            "lobbySpread": 395.29,
+            "teamGap": 1.005600000000008,
+            "badMatchRate": 85.8,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 7,
+          "seed": 20308418,
+          "baseline": {
+            "medianQueueSeconds": 48.04059391292685,
+            "lobbySpread": 413.118,
+            "teamGap": 20.742799999999967,
+            "badMatchRate": 91.8,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 51.07174972566281,
+            "lobbySpread": 390.838,
+            "teamGap": 0.9659999999999913,
+            "badMatchRate": 85.6,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 8,
+          "seed": 20316337,
+          "baseline": {
+            "medianQueueSeconds": 49.434358698214055,
+            "lobbySpread": 416.428,
+            "teamGap": 22.218000000000007,
+            "badMatchRate": 87.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 52.55128975037951,
+            "lobbySpread": 387.784,
+            "teamGap": 1.048399999999991,
+            "badMatchRate": 82.6,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          }
+        }
+      ],
+      "pairedDifferences": {
+        "queueSeconds": {
+          "mean": 2.9720762038088537,
+          "confidence": {
+            "low": 2.6126073969004646,
+            "high": 3.331545010717243
+          },
+          "trialDifferences": [
+            2.932429364656855,
+            2.739954280675647,
+            2.168834534160851,
+            3.563082362908972,
+            2.8120172655580973,
+            3.412204957608992,
+            3.0311558127359604,
+            3.116931052165455
+          ]
+        },
+        "spread": {
+          "mean": -25.27349999999999,
+          "confidence": {
+            "low": -28.241685070739315,
+            "high": -22.305314929260668
+          },
+          "trialDifferences": [
+            -24.30000000000001,
+            -26.819999999999993,
+            -19.704000000000008,
+            -28.20999999999998,
+            -29.541999999999973,
+            -22.687999999999988,
+            -22.279999999999973,
+            -28.644000000000005
+          ]
+        },
+        "teamGap": {
+          "mean": -20.800200000000004,
+          "confidence": {
+            "low": -21.45409207993053,
+            "high": -20.14630792006948
+          },
+          "trialDifferences": [
+            -20.3968,
+            -21.020800000000005,
+            -20.350399999999997,
+            -21.1416,
+            -22.302400000000024,
+            -20.2432,
+            -19.776799999999977,
+            -21.169600000000017
+          ]
+        },
+        "badMatchRate": {
+          "mean": -4.2500000000000036,
+          "confidence": {
+            "low": -5.299126673374441,
+            "high": -3.2008733266255662
+          },
+          "trialDifferences": [
+            -2.200000000000003,
+            -4.799999999999997,
+            -3.4000000000000057,
+            -5.200000000000003,
+            -3.4000000000000057,
+            -4,
+            -6.200000000000003,
+            -4.800000000000011
+          ]
+        }
+      }
+    },
+    {
+      "id": "late-policy-tradeoff-balanced",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "pairedDifferenceConvention": "Tail-Aware minus Baseline",
+      "trials": [
+        {
+          "trial": 1,
+          "seed": 20260904,
+          "baseline": {
+            "medianQueueSeconds": 64.45651695977449,
+            "lobbySpread": 320.77,
+            "teamGap": 14.480000000000015,
+            "badMatchRate": 58.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "adaptive": {
+            "medianQueueSeconds": 75.51012777198048,
+            "lobbySpread": 271.372,
+            "teamGap": 0.7948000000000047,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5006
+          }
+        },
+        {
+          "trial": 2,
+          "seed": 20268823,
+          "baseline": {
+            "medianQueueSeconds": 59.34652120039391,
+            "lobbySpread": 321.094,
+            "teamGap": 15.15040000000001,
+            "badMatchRate": 61.8,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          },
+          "adaptive": {
+            "medianQueueSeconds": 71.4009605062929,
+            "lobbySpread": 272.2,
+            "teamGap": 0.7680000000000096,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          }
+        },
+        {
+          "trial": 3,
+          "seed": 20276742,
+          "baseline": {
+            "medianQueueSeconds": 62.76191230608674,
+            "lobbySpread": 321.484,
+            "teamGap": 15.036000000000003,
+            "badMatchRate": 62.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 72.97424773349485,
+            "lobbySpread": 271.482,
+            "teamGap": 0.8888000000000029,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 4,
+          "seed": 20284661,
+          "baseline": {
+            "medianQueueSeconds": 64.31746869354538,
+            "lobbySpread": 328.188,
+            "teamGap": 15.0768,
+            "badMatchRate": 64.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 74.98783991253367,
+            "lobbySpread": 271.658,
+            "teamGap": 0.6631999999999935,
+            "badMatchRate": 34.2,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          }
+        },
+        {
+          "trial": 5,
+          "seed": 20292580,
+          "baseline": {
+            "medianQueueSeconds": 63.26206991563231,
+            "lobbySpread": 325.898,
+            "teamGap": 15.503200000000023,
+            "badMatchRate": 60.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "adaptive": {
+            "medianQueueSeconds": 72.53414144468479,
+            "lobbySpread": 275.734,
+            "teamGap": 0.9027999999999943,
+            "badMatchRate": 33.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        },
+        {
+          "trial": 6,
+          "seed": 20300499,
+          "baseline": {
+            "medianQueueSeconds": 62.38739103512489,
+            "lobbySpread": 320.856,
+            "teamGap": 14.9,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "adaptive": {
+            "medianQueueSeconds": 71.67131206297563,
+            "lobbySpread": 276.872,
+            "teamGap": 0.7183999999999919,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          }
+        },
+        {
+          "trial": 7,
+          "seed": 20308418,
+          "baseline": {
+            "medianQueueSeconds": 60.59821347988691,
+            "lobbySpread": 324.934,
+            "teamGap": 15.201999999999993,
+            "badMatchRate": 62.6,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "adaptive": {
+            "medianQueueSeconds": 74.03910678128159,
+            "lobbySpread": 271.904,
+            "teamGap": 0.7835999999999976,
+            "badMatchRate": 33.6,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          }
+        },
+        {
+          "trial": 8,
+          "seed": 20316337,
+          "baseline": {
+            "medianQueueSeconds": 62.61411047125148,
+            "lobbySpread": 324.434,
+            "teamGap": 14.494800000000014,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "adaptive": {
+            "medianQueueSeconds": 74.2305135674269,
+            "lobbySpread": 272.992,
+            "teamGap": 0.6928000000000029,
+            "badMatchRate": 36.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          }
+        }
+      ],
+      "pairedDifferences": {
+        "queueSeconds": {
+          "mean": 10.950505714871838,
+          "confidence": {
+            "low": 9.764094466540495,
+            "high": 12.13691696320318
+          },
+          "trialDifferences": [
+            11.053610812205989,
+            12.054439305898995,
+            10.212335427408107,
+            10.670371218988294,
+            9.272071529052482,
+            9.283921027850738,
+            13.44089330139468,
+            11.616403096175418
+          ]
+        },
+        "spread": {
+          "mean": -50.430499999999995,
+          "confidence": {
+            "low": -53.432402128593246,
+            "high": -47.428597871406744
+          },
+          "trialDifferences": [
+            -49.39799999999997,
+            -48.894000000000005,
+            -50.00199999999995,
+            -56.52999999999997,
+            -50.164000000000044,
+            -43.98399999999998,
+            -53.03000000000003,
+            -51.44200000000001
+          ]
+        },
+        "teamGap": {
+          "mean": -14.203850000000006,
+          "confidence": {
+            "low": -14.47077344984657,
+            "high": -13.936926550153443
+          },
+          "trialDifferences": [
+            -13.68520000000001,
+            -14.3824,
+            -14.1472,
+            -14.413600000000008,
+            -14.600400000000029,
+            -14.181600000000008,
+            -14.418399999999995,
+            -13.80200000000001
+          ]
+        },
+        "badMatchRate": {
+          "mean": -26.375,
+          "confidence": {
+            "low": -28.326125,
+            "high": -24.423875
+          },
+          "trialDifferences": [
+            -23.6,
+            -24.799999999999997,
+            -27.000000000000007,
+            -30.200000000000003,
+            -26.999999999999993,
+            -24.6,
+            -29,
+            -24.800000000000004
+          ]
+        }
+      }
+    },
+    {
+      "id": "late-policy-tradeoff-integrity",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "integrity",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "pairedDifferenceConvention": "Tail-Aware minus Baseline",
+      "trials": [
+        {
+          "trial": 1,
+          "seed": 20260904,
+          "baseline": {
+            "medianQueueSeconds": 90.85154098074395,
+            "lobbySpread": 225.82,
+            "teamGap": 10.101999999999997,
+            "badMatchRate": 18.8,
+            "arrivalsConsumedBeforeTargetMatches": 5010
+          },
+          "adaptive": {
+            "medianQueueSeconds": 105.54187238220766,
+            "lobbySpread": 199.712,
+            "teamGap": 0.5256000000000054,
+            "badMatchRate": 15.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          }
+        },
+        {
+          "trial": 2,
+          "seed": 20268823,
+          "baseline": {
+            "medianQueueSeconds": 89.29068462579198,
+            "lobbySpread": 221.7,
+            "teamGap": 9.928000000000004,
+            "badMatchRate": 15.6,
+            "arrivalsConsumedBeforeTargetMatches": 5011
+          },
+          "adaptive": {
+            "medianQueueSeconds": 106.02670965214566,
+            "lobbySpread": 193.484,
+            "teamGap": 0.49080000000000246,
+            "badMatchRate": 12.6,
+            "arrivalsConsumedBeforeTargetMatches": 5011
+          }
+        },
+        {
+          "trial": 3,
+          "seed": 20276742,
+          "baseline": {
+            "medianQueueSeconds": 87.94312045723927,
+            "lobbySpread": 221.672,
+            "teamGap": 9.873599999999993,
+            "badMatchRate": 16.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "adaptive": {
+            "medianQueueSeconds": 105.97379739791359,
+            "lobbySpread": 193.75,
+            "teamGap": 0.6147999999999992,
+            "badMatchRate": 12.6,
+            "arrivalsConsumedBeforeTargetMatches": 5007
+          }
+        },
+        {
+          "trial": 4,
+          "seed": 20284661,
+          "baseline": {
+            "medianQueueSeconds": 90.19175205869396,
+            "lobbySpread": 227.318,
+            "teamGap": 10.487599999999992,
+            "badMatchRate": 18.8,
+            "arrivalsConsumedBeforeTargetMatches": 5004
+          },
+          "adaptive": {
+            "medianQueueSeconds": 104.9509399253875,
+            "lobbySpread": 199.598,
+            "teamGap": 0.544400000000006,
+            "badMatchRate": 16.6,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          }
+        },
+        {
+          "trial": 5,
+          "seed": 20292580,
+          "baseline": {
+            "medianQueueSeconds": 88.95394162494631,
+            "lobbySpread": 225.454,
+            "teamGap": 10.203600000000009,
+            "badMatchRate": 16.400000000000002,
+            "arrivalsConsumedBeforeTargetMatches": 5007
+          },
+          "adaptive": {
+            "medianQueueSeconds": 106.38588233850896,
+            "lobbySpread": 201.1,
+            "teamGap": 0.63400000000002,
+            "badMatchRate": 14.799999999999999,
+            "arrivalsConsumedBeforeTargetMatches": 5008
+          }
+        },
+        {
+          "trial": 6,
+          "seed": 20300499,
+          "baseline": {
+            "medianQueueSeconds": 88.96691525452479,
+            "lobbySpread": 221.812,
+            "teamGap": 9.793199999999985,
+            "badMatchRate": 16.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "adaptive": {
+            "medianQueueSeconds": 105.54685643576886,
+            "lobbySpread": 201.98,
+            "teamGap": 0.629199999999998,
+            "badMatchRate": 16.8,
+            "arrivalsConsumedBeforeTargetMatches": 5012
+          }
+        },
+        {
+          "trial": 7,
+          "seed": 20308418,
+          "baseline": {
+            "medianQueueSeconds": 89.72309845674681,
+            "lobbySpread": 223.33,
+            "teamGap": 9.91319999999999,
+            "badMatchRate": 17,
+            "arrivalsConsumedBeforeTargetMatches": 5008
+          },
+          "adaptive": {
+            "medianQueueSeconds": 106.27847170845303,
+            "lobbySpread": 196.028,
+            "teamGap": 0.6104000000000033,
+            "badMatchRate": 13.8,
+            "arrivalsConsumedBeforeTargetMatches": 5008
+          }
+        },
+        {
+          "trial": 8,
+          "seed": 20316337,
+          "baseline": {
+            "medianQueueSeconds": 90.09122866645703,
+            "lobbySpread": 221.096,
+            "teamGap": 9.878800000000005,
+            "badMatchRate": 16.400000000000002,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "adaptive": {
+            "medianQueueSeconds": 105.55533658816421,
+            "lobbySpread": 198.718,
+            "teamGap": 0.5548000000000084,
+            "badMatchRate": 15.8,
+            "arrivalsConsumedBeforeTargetMatches": 5009
+          }
+        }
+      ],
+      "pairedDifferences": {
+        "queueSeconds": {
+          "mean": 16.28094803792567,
+          "confidence": {
+            "low": 15.268092997912603,
+            "high": 17.293803077938733
+          },
+          "trialDifferences": [
+            14.690331401463709,
+            16.736025026353673,
+            18.03067694067431,
+            14.759187866693537,
+            17.431940713562653,
+            16.579941181244067,
+            16.555373251706214,
+            15.464107921707182
+          ]
+        },
+        "spread": {
+          "mean": -25.479000000000006,
+          "confidence": {
+            "low": -28.026396726230665,
+            "high": -22.931603273769348
+          },
+          "trialDifferences": [
+            -26.108000000000004,
+            -28.21599999999998,
+            -27.921999999999997,
+            -27.72,
+            -24.354000000000013,
+            -19.832000000000022,
+            -27.30200000000002,
+            -22.378000000000014
+          ]
+        },
+        "teamGap": {
+          "mean": -9.446999999999992,
+          "confidence": {
+            "low": -9.654122389364002,
+            "high": -9.239877610635983
+          },
+          "trialDifferences": [
+            -9.57639999999999,
+            -9.437200000000002,
+            -9.258799999999994,
+            -9.943199999999985,
+            -9.569599999999989,
+            -9.163999999999987,
+            -9.302799999999985,
+            -9.323999999999996
+          ]
+        },
+        "badMatchRate": {
+          "mean": -2.2250000000000005,
+          "confidence": {
+            "low": -3.4089772023248592,
+            "high": -1.0410227976751416
+          },
+          "trialDifferences": [
+            -3,
+            -3,
+            -4.200000000000001,
+            -2.1999999999999993,
+            -1.6000000000000032,
+            0,
+            -3.1999999999999993,
+            -0.6000000000000014
+          ]
+        }
+      }
+    }
+  ],
+  "lateNightBalancedAblation": {
+    "scenario": {
+      "id": "late-balanced",
+      "scenarioId": "late-balanced",
+      "label": "Late-night population / Balanced policy",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    },
+    "trials": [
+      {
+        "trial": 1,
+        "seed": 20260904,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 64.45651695977449,
+            "lobbySpread": 320.77,
+            "teamGap": 14.480000000000015,
+            "badMatchRate": 58.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 64.45651695977449,
+            "lobbySpread": 320.77,
+            "teamGap": 0.9904000000000001,
+            "badMatchRate": 58.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 75.51012777198048,
+            "lobbySpread": 271.372,
+            "teamGap": 11.89400000000001,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5006
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 75.51012777198048,
+            "lobbySpread": 271.372,
+            "teamGap": 0.7948000000000047,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5006
+          }
+        }
+      },
+      {
+        "trial": 2,
+        "seed": 20268823,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 59.34652120039391,
+            "lobbySpread": 321.094,
+            "teamGap": 15.15040000000001,
+            "badMatchRate": 61.8,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 59.34652120039391,
+            "lobbySpread": 321.094,
+            "teamGap": 0.8319999999999891,
+            "badMatchRate": 61.8,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 71.4009605062929,
+            "lobbySpread": 272.2,
+            "teamGap": 11.711999999999977,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 71.4009605062929,
+            "lobbySpread": 272.2,
+            "teamGap": 0.7680000000000096,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5001
+          }
+        }
+      },
+      {
+        "trial": 3,
+        "seed": 20276742,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 62.76191230608674,
+            "lobbySpread": 321.484,
+            "teamGap": 15.036000000000003,
+            "badMatchRate": 62.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 62.76191230608674,
+            "lobbySpread": 321.484,
+            "teamGap": 1.026399999999995,
+            "badMatchRate": 62.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 72.97424773349485,
+            "lobbySpread": 271.482,
+            "teamGap": 11.947199999999997,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 72.97424773349485,
+            "lobbySpread": 271.482,
+            "teamGap": 0.8888000000000029,
+            "badMatchRate": 35.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        }
+      },
+      {
+        "trial": 4,
+        "seed": 20284661,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 64.31746869354538,
+            "lobbySpread": 328.188,
+            "teamGap": 15.0768,
+            "badMatchRate": 64.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 64.31746869354538,
+            "lobbySpread": 328.188,
+            "teamGap": 0.9503999999999896,
+            "badMatchRate": 64.4,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 74.98783991253367,
+            "lobbySpread": 271.658,
+            "teamGap": 11.407199999999998,
+            "badMatchRate": 34.2,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 74.98783991253367,
+            "lobbySpread": 271.658,
+            "teamGap": 0.6631999999999935,
+            "badMatchRate": 34.2,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          }
+        }
+      },
+      {
+        "trial": 5,
+        "seed": 20292580,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 63.26206991563231,
+            "lobbySpread": 325.898,
+            "teamGap": 15.503200000000023,
+            "badMatchRate": 60.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 63.26206991563231,
+            "lobbySpread": 325.898,
+            "teamGap": 1.0200000000000022,
+            "badMatchRate": 60.199999999999996,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 72.53414144468479,
+            "lobbySpread": 275.734,
+            "teamGap": 11.546800000000033,
+            "badMatchRate": 33.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 72.53414144468479,
+            "lobbySpread": 275.734,
+            "teamGap": 0.9027999999999943,
+            "badMatchRate": 33.2,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          }
+        }
+      },
+      {
+        "trial": 6,
+        "seed": 20300499,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 62.38739103512489,
+            "lobbySpread": 320.856,
+            "teamGap": 14.9,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 62.38739103512489,
+            "lobbySpread": 320.856,
+            "teamGap": 0.7864000000000019,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 71.67131206297563,
+            "lobbySpread": 276.872,
+            "teamGap": 12.456000000000003,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 71.67131206297563,
+            "lobbySpread": 276.872,
+            "teamGap": 0.7183999999999919,
+            "badMatchRate": 37,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          }
+        }
+      },
+      {
+        "trial": 7,
+        "seed": 20308418,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 60.59821347988691,
+            "lobbySpread": 324.934,
+            "teamGap": 15.201999999999993,
+            "badMatchRate": 62.6,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 60.59821347988691,
+            "lobbySpread": 324.934,
+            "teamGap": 0.854800000000012,
+            "badMatchRate": 62.6,
+            "arrivalsConsumedBeforeTargetMatches": 5000
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 74.03910678128159,
+            "lobbySpread": 271.904,
+            "teamGap": 11.935600000000003,
+            "badMatchRate": 33.6,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 74.03910678128159,
+            "lobbySpread": 271.904,
+            "teamGap": 0.7835999999999976,
+            "badMatchRate": 33.6,
+            "arrivalsConsumedBeforeTargetMatches": 5003
+          }
+        }
+      },
+      {
+        "trial": 8,
+        "seed": 20316337,
+        "variants": {
+          "baseline-snake": {
+            "medianQueueSeconds": 62.61411047125148,
+            "lobbySpread": 324.434,
+            "teamGap": 14.494800000000014,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "baseline-optimized": {
+            "medianQueueSeconds": 62.61411047125148,
+            "lobbySpread": 324.434,
+            "teamGap": 0.9116000000000067,
+            "badMatchRate": 61.6,
+            "arrivalsConsumedBeforeTargetMatches": 5002
+          },
+          "tail-snake": {
+            "medianQueueSeconds": 74.2305135674269,
+            "lobbySpread": 272.992,
+            "teamGap": 11.167200000000017,
+            "badMatchRate": 36.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          },
+          "tail-optimized": {
+            "medianQueueSeconds": 74.2305135674269,
+            "lobbySpread": 272.992,
+            "teamGap": 0.6928000000000029,
+            "badMatchRate": 36.8,
+            "arrivalsConsumedBeforeTargetMatches": 5005
+          }
+        }
+      }
+    ],
+    "contrasts": {
+      "candidateSelectionWithSnake": {
+        "reference": "baseline-snake",
+        "comparison": "tail-snake",
+        "convention": "tail-snake minus baseline-snake",
+        "pairedDifferences": {
+          "queueSeconds": {
+            "mean": 10.950505714871838,
+            "confidence": {
+              "low": 9.764094466540495,
+              "high": 12.13691696320318
+            },
+            "trialDifferences": [
+              11.053610812205989,
+              12.054439305898995,
+              10.212335427408107,
+              10.670371218988294,
+              9.272071529052482,
+              9.283921027850738,
+              13.44089330139468,
+              11.616403096175418
+            ]
+          },
+          "spread": {
+            "mean": -50.430499999999995,
+            "confidence": {
+              "low": -53.432402128593246,
+              "high": -47.428597871406744
+            },
+            "trialDifferences": [
+              -49.39799999999997,
+              -48.894000000000005,
+              -50.00199999999995,
+              -56.52999999999997,
+              -50.164000000000044,
+              -43.98399999999998,
+              -53.03000000000003,
+              -51.44200000000001
+            ]
+          },
+          "teamGap": {
+            "mean": -3.2221500000000027,
+            "confidence": {
+              "low": -3.64934460661606,
+              "high": -2.7949553933839453
+            },
+            "trialDifferences": [
+              -2.586000000000004,
+              -3.4384000000000334,
+              -3.088800000000006,
+              -3.6696000000000026,
+              -3.9563999999999897,
+              -2.4439999999999973,
+              -3.26639999999999,
+              -3.327599999999997
+            ]
+          },
+          "badMatchRate": {
+            "mean": -26.375,
+            "confidence": {
+              "low": -28.326125,
+              "high": -24.423875
+            },
+            "trialDifferences": [
+              -23.6,
+              -24.799999999999997,
+              -27.000000000000007,
+              -30.200000000000003,
+              -26.999999999999993,
+              -24.6,
+              -29,
+              -24.800000000000004
+            ]
+          }
+        }
+      },
+      "candidateSelectionWithOptimized": {
+        "reference": "baseline-optimized",
+        "comparison": "tail-optimized",
+        "convention": "tail-optimized minus baseline-optimized",
+        "pairedDifferences": {
+          "queueSeconds": {
+            "mean": 10.950505714871838,
+            "confidence": {
+              "low": 9.764094466540495,
+              "high": 12.13691696320318
+            },
+            "trialDifferences": [
+              11.053610812205989,
+              12.054439305898995,
+              10.212335427408107,
+              10.670371218988294,
+              9.272071529052482,
+              9.283921027850738,
+              13.44089330139468,
+              11.616403096175418
+            ]
+          },
+          "spread": {
+            "mean": -50.430499999999995,
+            "confidence": {
+              "low": -53.432402128593246,
+              "high": -47.428597871406744
+            },
+            "trialDifferences": [
+              -49.39799999999997,
+              -48.894000000000005,
+              -50.00199999999995,
+              -56.52999999999997,
+              -50.164000000000044,
+              -43.98399999999998,
+              -53.03000000000003,
+              -51.44200000000001
+            ]
+          },
+          "teamGap": {
+            "mean": -0.1449499999999999,
+            "confidence": {
+              "low": -0.213458983704888,
+              "high": -0.07644101629511182
+            },
+            "trialDifferences": [
+              -0.19559999999999533,
+              -0.06399999999997952,
+              -0.13759999999999217,
+              -0.2871999999999961,
+              -0.11720000000000796,
+              -0.06800000000000994,
+              -0.07120000000001436,
+              -0.21880000000000388
+            ]
+          },
+          "badMatchRate": {
+            "mean": -26.375,
+            "confidence": {
+              "low": -28.326125,
+              "high": -24.423875
+            },
+            "trialDifferences": [
+              -23.6,
+              -24.799999999999997,
+              -27.000000000000007,
+              -30.200000000000003,
+              -26.999999999999993,
+              -24.6,
+              -29,
+              -24.800000000000004
+            ]
+          }
+        }
+      },
+      "teamBalancingWithBaseline": {
+        "reference": "baseline-snake",
+        "comparison": "baseline-optimized",
+        "convention": "baseline-optimized minus baseline-snake",
+        "pairedDifferences": {
+          "queueSeconds": {
+            "mean": 0,
+            "confidence": {
+              "low": 0,
+              "high": 0
+            },
+            "trialDifferences": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "spread": {
+            "mean": 0,
+            "confidence": {
+              "low": 0,
+              "high": 0
+            },
+            "trialDifferences": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "teamGap": {
+            "mean": -14.058900000000008,
+            "confidence": {
+              "low": -14.3571920815509,
+              "high": -13.760607918449116
+            },
+            "trialDifferences": [
+              -13.489600000000015,
+              -14.318400000000022,
+              -14.009600000000008,
+              -14.126400000000011,
+              -14.483200000000021,
+              -14.113599999999998,
+              -14.347199999999981,
+              -13.583200000000007
+            ]
+          },
+          "badMatchRate": {
+            "mean": 0,
+            "confidence": {
+              "low": 0,
+              "high": 0
+            },
+            "trialDifferences": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      "teamBalancingWithTailAware": {
+        "reference": "tail-snake",
+        "comparison": "tail-optimized",
+        "convention": "tail-optimized minus tail-snake",
+        "pairedDifferences": {
+          "queueSeconds": {
+            "mean": 0,
+            "confidence": {
+              "low": 0,
+              "high": 0
+            },
+            "trialDifferences": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "spread": {
+            "mean": 0,
+            "confidence": {
+              "low": 0,
+              "high": 0
+            },
+            "trialDifferences": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "teamGap": {
+            "mean": -10.981700000000005,
+            "confidence": {
+              "low": -11.305447373984663,
+              "high": -10.657952626015348
+            },
+            "trialDifferences": [
+              -11.099200000000007,
+              -10.943999999999967,
+              -11.058399999999994,
+              -10.744000000000005,
+              -10.64400000000004,
+              -11.737600000000011,
+              -11.152000000000005,
+              -10.474400000000013
+            ]
+          },
+          "badMatchRate": {
+            "mean": 0,
+            "confidence": {
+              "low": 0,
+              "high": 0
+            },
+            "trialDifferences": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  },
+  "lateNightBalancedSensitivity": {
+    "scenario": {
+      "id": "late-balanced",
+      "scenarioId": "late-balanced",
+      "label": "Late-night population / Balanced policy",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    },
+    "pairedDifferenceConvention": "Tail-Aware + Optimized minus Baseline + Snake",
+    "cells": [
+      {
+        "spreadThreshold": 220,
+        "teamGapThreshold": 5,
+        "baselineRates": [
+          95.19999999999999,
+          94.19999999999999,
+          94.6,
+          95,
+          94.8,
+          95,
+          96.39999999999999,
+          94.39999999999999
+        ],
+        "adaptiveRates": [
+          64.60000000000001,
+          64.4,
+          66.2,
+          64.2,
+          67.60000000000001,
+          65.4,
+          68.4,
+          66.4
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -29.04999999999999,
+          "confidence": {
+            "low": -30.161981223344803,
+            "high": -27.938018776655177
+          },
+          "trialDifferences": [
+            -30.59999999999998,
+            -29.799999999999983,
+            -28.39999999999999,
+            -30.799999999999997,
+            -27.19999999999999,
+            -29.599999999999994,
+            -27.999999999999986,
+            -27.999999999999986
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 250,
+        "teamGapThreshold": 5,
+        "baselineRates": [
+          91.8,
+          90.8,
+          90.60000000000001,
+          90.8,
+          91.8,
+          91,
+          91.60000000000001,
+          90.8
+        ],
+        "adaptiveRates": [
+          45.6,
+          49.6,
+          48.6,
+          48.4,
+          48.199999999999996,
+          49.2,
+          50,
+          48.4
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -42.65,
+          "confidence": {
+            "low": -43.99008385598492,
+            "high": -41.30991614401508
+          },
+          "trialDifferences": [
+            -46.199999999999996,
+            -41.199999999999996,
+            -42.00000000000001,
+            -42.4,
+            -43.6,
+            -41.8,
+            -41.60000000000001,
+            -42.4
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 280,
+        "teamGapThreshold": 5,
+        "baselineRates": [
+          89,
+          87.8,
+          86,
+          88.4,
+          89.4,
+          88.8,
+          89,
+          87
+        ],
+        "adaptiveRates": [
+          35.4,
+          37.8,
+          35.8,
+          34.8,
+          33.6,
+          37.2,
+          34.2,
+          37.2
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -52.42500000000001,
+          "confidence": {
+            "low": -54.3781715457311,
+            "high": -50.47182845426892
+          },
+          "trialDifferences": [
+            -53.6,
+            -50,
+            -50.2,
+            -53.60000000000001,
+            -55.800000000000004,
+            -51.599999999999994,
+            -54.8,
+            -49.8
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 320,
+        "teamGapThreshold": 5,
+        "baselineRates": [
+          84.6,
+          81.6,
+          81.2,
+          83,
+          85,
+          83.39999999999999,
+          83.8,
+          82.19999999999999
+        ],
+        "adaptiveRates": [
+          23,
+          24.2,
+          21.8,
+          22.8,
+          22,
+          24.4,
+          21.6,
+          23.599999999999998
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -60.175,
+          "confidence": {
+            "low": -61.79497567703852,
+            "high": -58.55502432296147
+          },
+          "trialDifferences": [
+            -61.599999999999994,
+            -57.39999999999999,
+            -59.400000000000006,
+            -60.2,
+            -63,
+            -58.99999999999999,
+            -62.199999999999996,
+            -58.599999999999994
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 220,
+        "teamGapThreshold": 10,
+        "baselineRates": [
+          92.2,
+          89.2,
+          91.8,
+          92,
+          90.4,
+          89.8,
+          93.2,
+          91
+        ],
+        "adaptiveRates": [
+          64.4,
+          64.4,
+          66,
+          63.800000000000004,
+          67.60000000000001,
+          65.2,
+          68,
+          66.2
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -25.5,
+          "confidence": {
+            "low": -26.97694202662122,
+            "high": -24.02305797337878
+          },
+          "trialDifferences": [
+            -27.799999999999997,
+            -24.799999999999997,
+            -25.799999999999997,
+            -28.199999999999996,
+            -22.799999999999997,
+            -24.599999999999994,
+            -25.200000000000003,
+            -24.799999999999997
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 250,
+        "teamGapThreshold": 10,
+        "baselineRates": [
+          85.39999999999999,
+          82.39999999999999,
+          85,
+          86,
+          84.2,
+          82.39999999999999,
+          83.6,
+          83.6
+        ],
+        "adaptiveRates": [
+          45.4,
+          49.6,
+          48.199999999999996,
+          48,
+          48.199999999999996,
+          49,
+          49.6,
+          48.199999999999996
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -35.8,
+          "confidence": {
+            "low": -37.8403326847075,
+            "high": -33.759667315292496
+          },
+          "trialDifferences": [
+            -39.99999999999999,
+            -32.79999999999999,
+            -36.800000000000004,
+            -38,
+            -36.00000000000001,
+            -33.39999999999999,
+            -33.99999999999999,
+            -35.4
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 280,
+        "teamGapThreshold": 10,
+        "baselineRates": [
+          78.8,
+          76.6,
+          76.8,
+          80.80000000000001,
+          77.8,
+          77.2,
+          78,
+          76.2
+        ],
+        "adaptiveRates": [
+          35.199999999999996,
+          37.6,
+          35.199999999999996,
+          34.2,
+          33.4,
+          37,
+          33.6,
+          37
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -42.375,
+          "confidence": {
+            "low": -44.7050051535619,
+            "high": -40.0449948464381
+          },
+          "trialDifferences": [
+            -43.6,
+            -38.99999999999999,
+            -41.6,
+            -46.60000000000001,
+            -44.4,
+            -40.2,
+            -44.4,
+            -39.2
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 320,
+        "teamGapThreshold": 10,
+        "baselineRates": [
+          70.6,
+          65,
+          67.80000000000001,
+          71.6,
+          68.60000000000001,
+          67,
+          68.2,
+          65.8
+        ],
+        "adaptiveRates": [
+          22.400000000000002,
+          23.799999999999997,
+          21.2,
+          22.2,
+          21.8,
+          24,
+          20.599999999999998,
+          23.200000000000003
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -45.675,
+          "confidence": {
+            "low": -48.17778097421862,
+            "high": -43.172219025781374
+          },
+          "trialDifferences": [
+            -48.19999999999999,
+            -41.2,
+            -46.60000000000001,
+            -49.39999999999999,
+            -46.80000000000001,
+            -43,
+            -47.60000000000001,
+            -42.599999999999994
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 220,
+        "teamGapThreshold": 20,
+        "baselineRates": [
+          87.4,
+          85.8,
+          88.6,
+          89.2,
+          86.4,
+          87.4,
+          90.60000000000001,
+          86.6
+        ],
+        "adaptiveRates": [
+          64.4,
+          64.2,
+          66,
+          63.800000000000004,
+          67.4,
+          65.2,
+          68,
+          66.2
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -22.1,
+          "confidence": {
+            "low": -23.678917441069764,
+            "high": -20.52108255893024
+          },
+          "trialDifferences": [
+            -23,
+            -21.599999999999994,
+            -22.599999999999994,
+            -25.4,
+            -19,
+            -22.200000000000003,
+            -22.60000000000001,
+            -20.39999999999999
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 250,
+        "teamGapThreshold": 20,
+        "baselineRates": [
+          76.4,
+          75.6,
+          79,
+          79.60000000000001,
+          75.8,
+          76.2,
+          77.2,
+          76.4
+        ],
+        "adaptiveRates": [
+          45.4,
+          49.2,
+          48.199999999999996,
+          48,
+          48,
+          49,
+          49.6,
+          48
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -28.85,
+          "confidence": {
+            "low": -30.509717841230856,
+            "high": -27.190282158769147
+          },
+          "trialDifferences": [
+            -31.000000000000007,
+            -26.39999999999999,
+            -30.800000000000004,
+            -31.60000000000001,
+            -27.799999999999997,
+            -27.200000000000003,
+            -27.6,
+            -28.400000000000006
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 280,
+        "teamGapThreshold": 20,
+        "baselineRates": [
+          65,
+          65.8,
+          66.8,
+          69.6,
+          65.4,
+          67.2,
+          67.80000000000001,
+          65.8
+        ],
+        "adaptiveRates": [
+          35.199999999999996,
+          37,
+          35.199999999999996,
+          34.2,
+          33.2,
+          37,
+          33.6,
+          36.8
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -31.400000000000002,
+          "confidence": {
+            "low": -33.42460734288334,
+            "high": -29.375392657116663
+          },
+          "trialDifferences": [
+            -29.800000000000004,
+            -28.799999999999997,
+            -31.6,
+            -35.39999999999999,
+            -32.2,
+            -30.200000000000003,
+            -34.20000000000001,
+            -29
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 320,
+        "teamGapThreshold": 20,
+        "baselineRates": [
+          48.4,
+          48.199999999999996,
+          52.2,
+          54.2,
+          51,
+          50.8,
+          51.4,
+          49.4
+        ],
+        "adaptiveRates": [
+          22.400000000000002,
+          23.200000000000003,
+          21.2,
+          22.2,
+          21.6,
+          24,
+          20.599999999999998,
+          23
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -28.425,
+          "confidence": {
+            "low": -30.667634152998755,
+            "high": -26.182365847001247
+          },
+          "trialDifferences": [
+            -25.999999999999996,
+            -24.999999999999993,
+            -31.000000000000004,
+            -32,
+            -29.4,
+            -26.799999999999997,
+            -30.8,
+            -26.4
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 220,
+        "teamGapThreshold": 42,
+        "baselineRates": [
+          86.6,
+          84.8,
+          87.4,
+          88.6,
+          85.8,
+          86.4,
+          90.2,
+          86.2
+        ],
+        "adaptiveRates": [
+          64.4,
+          64.2,
+          66,
+          63.800000000000004,
+          67.4,
+          65.2,
+          68,
+          66.2
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -21.349999999999994,
+          "confidence": {
+            "low": -22.913022961055177,
+            "high": -19.786977038944812
+          },
+          "trialDifferences": [
+            -22.19999999999999,
+            -20.599999999999994,
+            -21.400000000000006,
+            -24.79999999999999,
+            -18.39999999999999,
+            -21.200000000000003,
+            -22.200000000000003,
+            -20
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 250,
+        "teamGapThreshold": 42,
+        "baselineRates": [
+          74.6,
+          73.4,
+          76.8,
+          76.4,
+          73.4,
+          73.8,
+          75.8,
+          74
+        ],
+        "adaptiveRates": [
+          45.4,
+          49.2,
+          48.199999999999996,
+          48,
+          48,
+          49,
+          49.6,
+          48
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -26.6,
+          "confidence": {
+            "low": -28.178917441069764,
+            "high": -25.02108255893024
+          },
+          "trialDifferences": [
+            -29.199999999999996,
+            -24.200000000000003,
+            -28.6,
+            -28.400000000000006,
+            -25.400000000000006,
+            -24.799999999999997,
+            -26.199999999999996,
+            -26
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 280,
+        "teamGapThreshold": 42,
+        "baselineRates": [
+          58.8,
+          61.8,
+          62.2,
+          64.4,
+          60.199999999999996,
+          61.6,
+          62.6,
+          61.6
+        ],
+        "adaptiveRates": [
+          35.199999999999996,
+          37,
+          35.199999999999996,
+          34.2,
+          33.2,
+          37,
+          33.6,
+          36.8
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -26.375,
+          "confidence": {
+            "low": -28.326125,
+            "high": -24.423875
+          },
+          "trialDifferences": [
+            -23.6,
+            -24.799999999999997,
+            -27.000000000000007,
+            -30.200000000000003,
+            -26.999999999999993,
+            -24.6,
+            -29,
+            -24.800000000000004
+          ]
+        }
+      },
+      {
+        "spreadThreshold": 320,
+        "teamGapThreshold": 42,
+        "baselineRates": [
+          39.2,
+          39,
+          43,
+          44.2,
+          42.4,
+          41,
+          41,
+          40.8
+        ],
+        "adaptiveRates": [
+          22.400000000000002,
+          23.200000000000003,
+          21.2,
+          22.2,
+          21.4,
+          24,
+          20.599999999999998,
+          23
+        ],
+        "adaptiveMinusBaseline": {
+          "mean": -19.074999999999996,
+          "confidence": {
+            "low": -21.154005651211136,
+            "high": -16.995994348788855
+          },
+          "trialDifferences": [
+            -16.8,
+            -15.799999999999997,
+            -21.8,
+            -22.000000000000004,
+            -21,
+            -17,
+            -20.400000000000002,
+            -17.799999999999997
+          ]
+        }
+      }
+    ]
+  }
+}

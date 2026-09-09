@@ -70,3 +70,22 @@ test("representative lobbies always contain two complete teams", () => {
     assertValidLobby(comparison.adaptive.players);
   }
 });
+
+test("paired differences retain negative confidence bounds", () => {
+  const difference = matchmaking.pairedDifference([10, 12], [8, 10]);
+
+  assert.equal(difference.mean, -2);
+  assert.equal(difference.confidence.low, -2);
+  assert.equal(difference.confidence.high, -2);
+});
+
+test("paired differences use the small-sample t interval", () => {
+  const difference = matchmaking.pairedDifference(
+    Array(8).fill(0),
+    [0, 1, 2, 3, 4, 5, 6, 7],
+  );
+
+  assert.equal(difference.mean, 3.5);
+  assert.ok(difference.confidence.low < 1.5);
+  assert.ok(difference.confidence.high > 5.5);
+});
