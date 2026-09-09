@@ -16,6 +16,7 @@ registerHooks({
 
 const expectedRoutes = [
   ["/", "HOW MUCH MATCH QUALITY IS WORTH A LONGER QUEUE?"],
+  ["/findings", "FINDINGS: THE TRADEOFF IS REAL, IN THE MODEL"],
   ["/simulator", "QUEUE RESULTS"],
   ["/experiments", "FOCUSED EXPERIMENTS"],
   ["/runs", "SAVED RUNS"],
@@ -28,6 +29,7 @@ const expectedRouteContent = {
     "EXPERIMENT QUESTIONS",
     "Why do late-night high-ELO lobbies feel inconsistent\\?",
   ],
+  "/findings": ["Synthetic benchmark findings", "A SMALL WIN DOES NOT STOP A COLLAPSE"],
 };
 
 test("renders every primary route with persistent navigation", async () => {
@@ -61,6 +63,7 @@ test("renders every primary route with persistent navigation", async () => {
     }
     for (const destination of [
       "/simulator",
+      "/findings",
       "/experiments",
       "/runs",
       "/methodology",

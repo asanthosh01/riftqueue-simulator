@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   BookOpen,
   FlaskConical,
   Gauge,
@@ -24,6 +25,7 @@ import {
 
 const navigation = [
   { href: "/", label: "Overview", icon: Gauge },
+  { href: "/findings", label: "Findings", icon: BarChart3 },
   { href: "/simulator", label: "Simulator", icon: Play },
   { href: "/experiments", label: "Experiments", icon: FlaskConical },
   { href: "/runs", label: "Saved Runs", icon: History },

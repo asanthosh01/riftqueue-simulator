@@ -13,12 +13,12 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 - [x] Review and merge [PR #4](https://github.com/asanthosh01/riftqueue/pull/4).
 - [x] Generate reproducible benchmark results from the fixed scenario inputs.
 - [x] Analyze the results and publish defensible synthetic findings.
-- [ ] Improve the website presentation of the published benchmark findings.
+- [x] Improve the website presentation of the published benchmark findings.
 
 The benchmark plan, runner, official artifact, paired validation suite, and
-recruiter-readable synthetic findings are complete. The exact next recommended
-task is to improve how the website presents the published findings, after the
-findings pull request is reviewed and merged.
+recruiter-readable synthetic findings and website presentation are complete.
+The exact next recommended task is to add idempotency protection for duplicate
+experiment-creation requests before considering a public demo.
 
 ## Completed foundation
 
