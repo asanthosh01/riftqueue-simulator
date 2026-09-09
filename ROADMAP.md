@@ -11,13 +11,13 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 - [x] Build an automated benchmark runner for the four official scenarios in
   [`docs/benchmarks.md`](docs/benchmarks.md).
 - [x] Review and merge [PR #4](https://github.com/asanthosh01/riftqueue/pull/4).
-- [ ] Generate reproducible benchmark results from the fixed scenario inputs.
+- [x] Generate reproducible benchmark results from the fixed scenario inputs.
 - [ ] Analyze the results and publish defensible synthetic findings.
 - [ ] Improve the website presentation of the published benchmark findings.
 
-The benchmark plan and runner are complete. The exact next recommended task is
-to generate reproducible benchmark reports, then review the synthetic results
-before publishing any findings.
+The benchmark plan, runner, and reviewable official artifact are complete. The
+exact next recommended task is to analyze the synthetic benchmark results and
+publish defensible findings without making claims about production matchmaking.
 
 ## Completed foundation
 

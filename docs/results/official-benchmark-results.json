@@ -1,0 +1,1655 @@
+{
+  "schemaVersion": 1,
+  "description": "Synthetic RiftQueue benchmark output; not evidence about a production matchmaking system.",
+  "baseSeed": 20260904,
+  "runsPerArm": 8,
+  "matchesPerRun": 500,
+  "arms": [
+    {
+      "id": "peak-balanced",
+      "scenarioId": "peak-balanced",
+      "label": "Peak population / Balanced policy",
+      "population": 100,
+      "traffic": "peak",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    },
+    {
+      "id": "late-balanced",
+      "scenarioId": "late-balanced",
+      "label": "Late-night population / Balanced policy",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    },
+    {
+      "id": "overnight-balanced",
+      "scenarioId": "overnight-balanced",
+      "label": "Overnight population / Balanced policy",
+      "population": 25,
+      "traffic": "overnight",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    },
+    {
+      "id": "late-policy-tradeoff-fast",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "fast",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    },
+    {
+      "id": "late-policy-tradeoff-balanced",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    },
+    {
+      "id": "late-policy-tradeoff-integrity",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "integrity",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500
+    }
+  ],
+  "results": [
+    {
+      "id": "peak-balanced",
+      "scenarioId": "peak-balanced",
+      "label": "Peak population / Balanced policy",
+      "population": 100,
+      "traffic": "peak",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "comparison": {
+        "baseline": {
+          "algorithm": "baseline",
+          "queueSeconds": 27.64748549296776,
+          "p95QueueSeconds": 95.57586695934901,
+          "spread": 204.93424999999996,
+          "teamGap": 9.298849999999995,
+          "badMatchRate": 12.075,
+          "playersGenerated": 40050,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "makova61",
+              "role": "CONTROLLER",
+              "rank": "IMMORTAL 1",
+              "rr": 62,
+              "mmr": 2162,
+              "wait": 4.23794454664494,
+              "team": "A"
+            },
+            {
+              "name": "tempono59",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 45,
+              "mmr": 2145,
+              "wait": 6.222926595650279,
+              "team": "B"
+            },
+            {
+              "name": "echoze55",
+              "role": "CONTROLLER",
+              "rank": "IMMORTAL 1",
+              "rr": 38,
+              "mmr": 2138,
+              "wait": 18.80808816399349,
+              "team": "B"
+            },
+            {
+              "name": "zerofoxor54",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 83,
+              "mmr": 2083,
+              "wait": 21.630658350277372,
+              "team": "A"
+            },
+            {
+              "name": "vantaki48",
+              "role": "DUELIST",
+              "rank": "ASCENDANT 3",
+              "rr": 78,
+              "mmr": 2078,
+              "wait": 30.683291379091315,
+              "team": "A"
+            },
+            {
+              "name": "tempono43",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 57,
+              "mmr": 2057,
+              "wait": 48.668128333411005,
+              "team": "B"
+            },
+            {
+              "name": "pixelgh49",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 52,
+              "mmr": 2052,
+              "wait": 29.21991739621626,
+              "team": "B"
+            },
+            {
+              "name": "runete42",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 80,
+              "mmr": 1980,
+              "wait": 49.219237905546834,
+              "team": "A"
+            },
+            {
+              "name": "ghostdr60",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 67,
+              "mmr": 1967,
+              "wait": 5.890831461438211,
+              "team": "A"
+            },
+            {
+              "name": "driftro41",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 66,
+              "mmr": 1966,
+              "wait": 49.582266060459915,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 27.230330976881014,
+              "high": 28.064640009054507
+            },
+            "p95QueueSeconds": {
+              "low": 94.17973421832427,
+              "high": 96.97199970037376
+            },
+            "spread": {
+              "low": 203.93212921521402,
+              "high": 205.9363707847859
+            },
+            "teamGap": {
+              "low": 9.102764538131963,
+              "high": 9.494935461868026
+            },
+            "badMatchRate": {
+              "low": 11.129377982489832,
+              "high": 13.020622017510167
+            }
+          }
+        },
+        "adaptive": {
+          "algorithm": "tail-aware",
+          "queueSeconds": 32.2449111347084,
+          "p95QueueSeconds": 121.54049310323649,
+          "spread": 164.11725,
+          "teamGap": 0.4418000000000011,
+          "badMatchRate": 6.049999999999999,
+          "playersGenerated": 40079,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "nova",
+              "role": "CONTROLLER",
+              "rank": "IMMORTAL 1",
+              "rr": 92,
+              "mmr": 2192,
+              "wait": 22.773383110630512,
+              "team": "A"
+            },
+            {
+              "name": "vanta",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 89,
+              "mmr": 2189,
+              "wait": 55.102151643982516,
+              "team": "B"
+            },
+            {
+              "name": "ghost",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 1",
+              "rr": 60,
+              "mmr": 2160,
+              "wait": 14.906831269244904,
+              "team": "B"
+            },
+            {
+              "name": "orbitso18",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 50,
+              "mmr": 2150,
+              "wait": 3.620946770264574,
+              "team": "A"
+            },
+            {
+              "name": "kinetic",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 25,
+              "mmr": 2125,
+              "wait": 33.27210439568226,
+              "team": "A"
+            },
+            {
+              "name": "north",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 24,
+              "mmr": 2124,
+              "wait": 45.08112743301128,
+              "team": "B"
+            },
+            {
+              "name": "mako",
+              "role": "DUELIST",
+              "rank": "ASCENDANT 3",
+              "rr": 51,
+              "mmr": 2051,
+              "wait": 60,
+              "team": "A"
+            },
+            {
+              "name": "pixelgh20",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 50,
+              "mmr": 2050,
+              "wait": 0.4755943020068685,
+              "team": "B"
+            },
+            {
+              "name": "sonderec17",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 42,
+              "mmr": 2042,
+              "wait": 4.209004331059695,
+              "team": "A"
+            },
+            {
+              "name": "vantaki19",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 41,
+              "mmr": 2041,
+              "wait": 2.5708157103897378,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 31.88687535384186,
+              "high": 32.60294691557495
+            },
+            "p95QueueSeconds": {
+              "low": 118.95763967776827,
+              "high": 124.1233465287047
+            },
+            "spread": {
+              "low": 163.2515986035938,
+              "high": 164.98290139640622
+            },
+            "teamGap": {
+              "low": 0.40333488853519056,
+              "high": 0.4802651114648116
+            },
+            "badMatchRate": {
+              "low": 5.632574557555483,
+              "high": 6.467425442444515
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "late-balanced",
+      "scenarioId": "late-balanced",
+      "label": "Late-night population / Balanced policy",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "comparison": {
+        "baseline": {
+          "algorithm": "baseline",
+          "queueSeconds": 62.468025507712014,
+          "p95QueueSeconds": 215.9960248386941,
+          "spread": 323.45725000000004,
+          "teamGap": 14.980400000000008,
+          "badMatchRate": 61.65000000000001,
+          "playersGenerated": 40014,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "pixelgh92",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 3",
+              "rr": 74,
+              "mmr": 2374,
+              "wait": 146.7303465716177,
+              "team": "A"
+            },
+            {
+              "name": "orbitso9",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 3",
+              "rr": 28,
+              "mmr": 2328,
+              "wait": 51.370201260790054,
+              "team": "B"
+            },
+            {
+              "name": "rookpi14",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 96,
+              "mmr": 2296,
+              "wait": 29.088511778754764,
+              "team": "B"
+            },
+            {
+              "name": "northlo93",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 54,
+              "mmr": 2254,
+              "wait": 141.44656569371,
+              "team": "A"
+            },
+            {
+              "name": "kineticno96",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 49,
+              "mmr": 2249,
+              "wait": 115.43213710858981,
+              "team": "A"
+            },
+            {
+              "name": "zerofoxor16",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 24,
+              "mmr": 2124,
+              "wait": 0.07192709937226027,
+              "team": "B"
+            },
+            {
+              "name": "vantaki10",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 22,
+              "mmr": 2122,
+              "wait": 48.93255886333645,
+              "team": "B"
+            },
+            {
+              "name": "makova7",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 5,
+              "mmr": 2105,
+              "wait": 56.39606495069165,
+              "team": "A"
+            },
+            {
+              "name": "northlo12",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 1",
+              "rr": 2,
+              "mmr": 2102,
+              "wait": 41.537217966681055,
+              "team": "A"
+            },
+            {
+              "name": "pixelgh11",
+              "role": "FLEX",
+              "rank": "ASCENDANT 3",
+              "rr": 73,
+              "mmr": 2073,
+              "wait": 43.666917866932636,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 61.257552837700665,
+              "high": 63.67849817772336
+            },
+            "p95QueueSeconds": {
+              "low": 213.59175469162673,
+              "high": 218.40029498576146
+            },
+            "spread": {
+              "low": 321.51591393159254,
+              "high": 325.39858606840755
+            },
+            "teamGap": {
+              "low": 14.738020478092732,
+              "high": 15.222779521907285
+            },
+            "badMatchRate": {
+              "low": 60.50773383136855,
+              "high": 62.79226616863148
+            }
+          }
+        },
+        "adaptive": {
+          "algorithm": "tail-aware",
+          "queueSeconds": 73.41853122258385,
+          "p95QueueSeconds": 260.2330293302207,
+          "spread": 273.02675,
+          "teamGap": 0.7765499999999997,
+          "badMatchRate": 35.27499999999999,
+          "playersGenerated": 40020,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "runete17",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 27,
+              "mmr": 2227,
+              "wait": 33.20851968088027,
+              "team": "A"
+            },
+            {
+              "name": "pixelgh8",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 17,
+              "mmr": 2217,
+              "wait": 133.70714739430878,
+              "team": "B"
+            },
+            {
+              "name": "driftro16",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 1",
+              "rr": 99,
+              "mmr": 2199,
+              "wait": 45.6323606906426,
+              "team": "B"
+            },
+            {
+              "name": "zerofoxor13",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 81,
+              "mmr": 2181,
+              "wait": 65.53273107704808,
+              "team": "B"
+            },
+            {
+              "name": "vantaki7",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 34,
+              "mmr": 2134,
+              "wait": 135.64669490549932,
+              "team": "A"
+            },
+            {
+              "name": "echoze14",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 1",
+              "rr": 23,
+              "mmr": 2123,
+              "wait": 61.06984955545158,
+              "team": "A"
+            },
+            {
+              "name": "rookpi11",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 88,
+              "mmr": 2088,
+              "wait": 88.58158344980802,
+              "team": "A"
+            },
+            {
+              "name": "kineticno12",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 55,
+              "mmr": 2055,
+              "wait": 78.72193622805935,
+              "team": "A"
+            },
+            {
+              "name": "novama15",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 42,
+              "mmr": 2042,
+              "wait": 56.343320470434264,
+              "team": "B"
+            },
+            {
+              "name": "northlo9",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 80,
+              "mmr": 1980,
+              "wait": 130.7874162628559,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 72.37136377547903,
+              "high": 74.46569866968868
+            },
+            "p95QueueSeconds": {
+              "low": 256.63991300289587,
+              "high": 263.8261456575455
+            },
+            "spread": {
+              "low": 271.56709113214765,
+              "high": 274.48640886785233
+            },
+            "teamGap": {
+              "low": 0.7166870329836542,
+              "high": 0.8364129670163453
+            },
+            "badMatchRate": {
+              "low": 34.20932040462435,
+              "high": 36.34067959537563
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "overnight-balanced",
+      "scenarioId": "overnight-balanced",
+      "label": "Overnight population / Balanced policy",
+      "population": 25,
+      "traffic": "overnight",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "comparison": {
+        "baseline": {
+          "algorithm": "baseline",
+          "queueSeconds": 212.2772116800079,
+          "p95QueueSeconds": 578.6862644211965,
+          "spread": 430.13149999999996,
+          "teamGap": 23.23885,
+          "badMatchRate": 91.67499999999998,
+          "playersGenerated": 40000,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "novama43",
+              "role": "DUELIST",
+              "rank": "RADIANT",
+              "rr": 409,
+              "mmr": 2475,
+              "wait": 232.33419974203457,
+              "team": "A"
+            },
+            {
+              "name": "kineticno40",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 3",
+              "rr": 33,
+              "mmr": 2333,
+              "wait": 245.38712941991548,
+              "team": "B"
+            },
+            {
+              "name": "sonderec49",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 80,
+              "mmr": 2280,
+              "wait": 89.30565393514325,
+              "team": "B"
+            },
+            {
+              "name": "makova48",
+              "role": "CONTROLLER",
+              "rank": "IMMORTAL 2",
+              "rr": 57,
+              "mmr": 2257,
+              "wait": 99.21731697483847,
+              "team": "A"
+            },
+            {
+              "name": "tempono46",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 24,
+              "mmr": 2124,
+              "wait": 116.52655145044127,
+              "team": "A"
+            },
+            {
+              "name": "orbitso50",
+              "role": "CONTROLLER",
+              "rank": "IMMORTAL 1",
+              "rr": 17,
+              "mmr": 2117,
+              "wait": 1.1368698676815256,
+              "team": "B"
+            },
+            {
+              "name": "echoze42",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 92,
+              "mmr": 2092,
+              "wait": 234.81852246647213,
+              "team": "B"
+            },
+            {
+              "name": "driftro44",
+              "role": "DUELIST",
+              "rank": "ASCENDANT 3",
+              "rr": 89,
+              "mmr": 2089,
+              "wait": 143.16370831253607,
+              "team": "A"
+            },
+            {
+              "name": "ghostdr47",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 75,
+              "mmr": 2075,
+              "wait": 113.56799592180641,
+              "team": "A"
+            },
+            {
+              "name": "zerofoxor41",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 56,
+              "mmr": 2056,
+              "wait": 236.3479909831301,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 207.90024505195467,
+              "high": 216.65417830806112
+            },
+            "p95QueueSeconds": {
+              "low": 570.3004680956831,
+              "high": 587.0720607467099
+            },
+            "spread": {
+              "low": 425.43164391484163,
+              "high": 434.8313560851583
+            },
+            "teamGap": {
+              "low": 22.651719474678757,
+              "high": 23.825980525321242
+            },
+            "badMatchRate": {
+              "low": 90.52988472196026,
+              "high": 92.82011527803971
+            }
+          }
+        },
+        "adaptive": {
+          "algorithm": "tail-aware",
+          "queueSeconds": 219.08981750104363,
+          "p95QueueSeconds": 593.0416600790231,
+          "spread": 423.76975000000004,
+          "teamGap": 1.1305500000000026,
+          "badMatchRate": 90.825,
+          "playersGenerated": 40000,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "pixelgh87",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 3",
+              "rr": 68,
+              "mmr": 2368,
+              "wait": 799.0283536096103,
+              "team": "A"
+            },
+            {
+              "name": "vantaki5",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 2",
+              "rr": 89,
+              "mmr": 2289,
+              "wait": 109.62534620604129,
+              "team": "B"
+            },
+            {
+              "name": "makova2",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 12,
+              "mmr": 2212,
+              "wait": 288.65499308277504,
+              "team": "B"
+            },
+            {
+              "name": "northlo7",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 85,
+              "mmr": 2185,
+              "wait": 0.9483382640464697,
+              "team": "A"
+            },
+            {
+              "name": "runete96",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 1",
+              "rr": 56,
+              "mmr": 2156,
+              "wait": 378.44293959464994,
+              "team": "B"
+            },
+            {
+              "name": "orbitso4",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 1",
+              "rr": 26,
+              "mmr": 2126,
+              "wait": 116.5226336416381,
+              "team": "A"
+            },
+            {
+              "name": "pixelgh6",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 73,
+              "mmr": 2073,
+              "wait": 12.519840026769089,
+              "team": "B"
+            },
+            {
+              "name": "sonderec3",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 40,
+              "mmr": 2040,
+              "wait": 193.10236402158625,
+              "team": "A"
+            },
+            {
+              "name": "ghostdr1",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 81,
+              "mmr": 1981,
+              "wait": 307.65883229344035,
+              "team": "A"
+            },
+            {
+              "name": "tempono0",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 58,
+              "mmr": 1958,
+              "wait": 366.3170472023776,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 214.95621135588036,
+              "high": 223.2234236462069
+            },
+            "p95QueueSeconds": {
+              "low": 583.0259825353921,
+              "high": 603.0573376226541
+            },
+            "spread": {
+              "low": 420.0945739822153,
+              "high": 427.4449260177848
+            },
+            "teamGap": {
+              "low": 1.083580066766074,
+              "high": 1.1775199332339312
+            },
+            "badMatchRate": {
+              "low": 89.87503526381239,
+              "high": 91.77496473618761
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "late-policy-tradeoff-fast",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "fast",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "comparison": {
+        "baseline": {
+          "algorithm": "baseline",
+          "queueSeconds": 48.066791164492315,
+          "p95QueueSeconds": 134.46293693792092,
+          "spread": 417.113,
+          "teamGap": 21.8156,
+          "badMatchRate": 89.6,
+          "playersGenerated": 40002,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "zerofoxor53",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 3",
+              "rr": 90,
+              "mmr": 2390,
+              "wait": 103.49313866755529,
+              "team": "A"
+            },
+            {
+              "name": "echoze54",
+              "role": "CONTROLLER",
+              "rank": "IMMORTAL 3",
+              "rr": 46,
+              "mmr": 2346,
+              "wait": 98.6228423905668,
+              "team": "B"
+            },
+            {
+              "name": "ghostdr59",
+              "role": "FLEX",
+              "rank": "IMMORTAL 2",
+              "rr": 79,
+              "mmr": 2279,
+              "wait": 41.26702621397999,
+              "team": "B"
+            },
+            {
+              "name": "driftro56",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 66,
+              "mmr": 2266,
+              "wait": 79.63795704162567,
+              "team": "A"
+            },
+            {
+              "name": "tempono58",
+              "role": "FLEX",
+              "rank": "IMMORTAL 2",
+              "rr": 20,
+              "mmr": 2220,
+              "wait": 42.12630218512459,
+              "team": "A"
+            },
+            {
+              "name": "makova60",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 98,
+              "mmr": 2198,
+              "wait": 9.67417707889581,
+              "team": "B"
+            },
+            {
+              "name": "novama55",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 1",
+              "rr": 41,
+              "mmr": 2141,
+              "wait": 83.7644926003677,
+              "team": "B"
+            },
+            {
+              "name": "sonderec61",
+              "role": "FLEX",
+              "rank": "ASCENDANT 3",
+              "rr": 77,
+              "mmr": 2077,
+              "wait": 4.823014793905713,
+              "team": "A"
+            },
+            {
+              "name": "runete57",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 38,
+              "mmr": 2038,
+              "wait": 44.03105211862021,
+              "team": "A"
+            },
+            {
+              "name": "kineticno52",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 82,
+              "mmr": 1982,
+              "wait": 104.57270329667608,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 47.05353821144123,
+              "high": 49.0800441175434
+            },
+            "p95QueueSeconds": {
+              "low": 132.68512048921988,
+              "high": 136.24075338662195
+            },
+            "spread": {
+              "low": 413.2259322835844,
+              "high": 421.0000677164156
+            },
+            "teamGap": {
+              "low": 21.27386317226165,
+              "high": 22.35733682773835
+            },
+            "badMatchRate": {
+              "low": 88.49870621539935,
+              "high": 90.70129378460064
+            }
+          }
+        },
+        "adaptive": {
+          "algorithm": "tail-aware",
+          "queueSeconds": 51.03886736830117,
+          "p95QueueSeconds": 152.56295372982515,
+          "spread": 391.83950000000004,
+          "teamGap": 1.0153999999999976,
+          "badMatchRate": 85.35000000000001,
+          "playersGenerated": 40003,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "novama89",
+              "role": "FLEX",
+              "rank": "IMMORTAL 3",
+              "rr": 94,
+              "mmr": 2394,
+              "wait": 31.72617072434514,
+              "team": "A"
+            },
+            {
+              "name": "lotusru84",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 93,
+              "mmr": 2293,
+              "wait": 104.11006920683576,
+              "team": "B"
+            },
+            {
+              "name": "ghostdr93",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 93,
+              "mmr": 2293,
+              "wait": 13.02835346916254,
+              "team": "B"
+            },
+            {
+              "name": "driftro90",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 2",
+              "rr": 66,
+              "mmr": 2266,
+              "wait": 24.69650401666513,
+              "team": "B"
+            },
+            {
+              "name": "tempono92",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 43,
+              "mmr": 2243,
+              "wait": 13.259516574682493,
+              "team": "A"
+            },
+            {
+              "name": "kineticno86",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 1",
+              "rr": 98,
+              "mmr": 2198,
+              "wait": 54.8441117729526,
+              "team": "B"
+            },
+            {
+              "name": "runete91",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 50,
+              "mmr": 2150,
+              "wait": 22.4158360737747,
+              "team": "A"
+            },
+            {
+              "name": "zerofoxor87",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 47,
+              "mmr": 2147,
+              "wait": 42.978463608513266,
+              "team": "A"
+            },
+            {
+              "name": "echoze88",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 30,
+              "mmr": 2130,
+              "wait": 37.825355073291576,
+              "team": "A"
+            },
+            {
+              "name": "rookpi85",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 22,
+              "mmr": 2022,
+              "wait": 99.43724210216897,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 50.047297667854224,
+              "high": 52.030437068748114
+            },
+            "p95QueueSeconds": {
+              "low": 150.96540380316233,
+              "high": 154.16050365648798
+            },
+            "spread": {
+              "low": 388.995254249366,
+              "high": 394.6837457506341
+            },
+            "teamGap": {
+              "low": 0.989337368973951,
+              "high": 1.0414626310260442
+            },
+            "badMatchRate": {
+              "low": 84.15835407943467,
+              "high": 86.54164592056534
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "late-policy-tradeoff-balanced",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "balanced",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "comparison": {
+        "baseline": {
+          "algorithm": "baseline",
+          "queueSeconds": 62.468025507712014,
+          "p95QueueSeconds": 215.9960248386941,
+          "spread": 323.45725000000004,
+          "teamGap": 14.980400000000008,
+          "badMatchRate": 61.65000000000001,
+          "playersGenerated": 40014,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "pixelgh92",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 3",
+              "rr": 74,
+              "mmr": 2374,
+              "wait": 146.7303465716177,
+              "team": "A"
+            },
+            {
+              "name": "orbitso9",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 3",
+              "rr": 28,
+              "mmr": 2328,
+              "wait": 51.370201260790054,
+              "team": "B"
+            },
+            {
+              "name": "rookpi14",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 96,
+              "mmr": 2296,
+              "wait": 29.088511778754764,
+              "team": "B"
+            },
+            {
+              "name": "northlo93",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 54,
+              "mmr": 2254,
+              "wait": 141.44656569371,
+              "team": "A"
+            },
+            {
+              "name": "kineticno96",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 49,
+              "mmr": 2249,
+              "wait": 115.43213710858981,
+              "team": "A"
+            },
+            {
+              "name": "zerofoxor16",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 24,
+              "mmr": 2124,
+              "wait": 0.07192709937226027,
+              "team": "B"
+            },
+            {
+              "name": "vantaki10",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 22,
+              "mmr": 2122,
+              "wait": 48.93255886333645,
+              "team": "B"
+            },
+            {
+              "name": "makova7",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 5,
+              "mmr": 2105,
+              "wait": 56.39606495069165,
+              "team": "A"
+            },
+            {
+              "name": "northlo12",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 1",
+              "rr": 2,
+              "mmr": 2102,
+              "wait": 41.537217966681055,
+              "team": "A"
+            },
+            {
+              "name": "pixelgh11",
+              "role": "FLEX",
+              "rank": "ASCENDANT 3",
+              "rr": 73,
+              "mmr": 2073,
+              "wait": 43.666917866932636,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 61.257552837700665,
+              "high": 63.67849817772336
+            },
+            "p95QueueSeconds": {
+              "low": 213.59175469162673,
+              "high": 218.40029498576146
+            },
+            "spread": {
+              "low": 321.51591393159254,
+              "high": 325.39858606840755
+            },
+            "teamGap": {
+              "low": 14.738020478092732,
+              "high": 15.222779521907285
+            },
+            "badMatchRate": {
+              "low": 60.50773383136855,
+              "high": 62.79226616863148
+            }
+          }
+        },
+        "adaptive": {
+          "algorithm": "tail-aware",
+          "queueSeconds": 73.41853122258385,
+          "p95QueueSeconds": 260.2330293302207,
+          "spread": 273.02675,
+          "teamGap": 0.7765499999999997,
+          "badMatchRate": 35.27499999999999,
+          "playersGenerated": 40020,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "runete17",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 27,
+              "mmr": 2227,
+              "wait": 33.20851968088027,
+              "team": "A"
+            },
+            {
+              "name": "pixelgh8",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 17,
+              "mmr": 2217,
+              "wait": 133.70714739430878,
+              "team": "B"
+            },
+            {
+              "name": "driftro16",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 1",
+              "rr": 99,
+              "mmr": 2199,
+              "wait": 45.6323606906426,
+              "team": "B"
+            },
+            {
+              "name": "zerofoxor13",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 81,
+              "mmr": 2181,
+              "wait": 65.53273107704808,
+              "team": "B"
+            },
+            {
+              "name": "vantaki7",
+              "role": "FLEX",
+              "rank": "IMMORTAL 1",
+              "rr": 34,
+              "mmr": 2134,
+              "wait": 135.64669490549932,
+              "team": "A"
+            },
+            {
+              "name": "echoze14",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 1",
+              "rr": 23,
+              "mmr": 2123,
+              "wait": 61.06984955545158,
+              "team": "A"
+            },
+            {
+              "name": "rookpi11",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 88,
+              "mmr": 2088,
+              "wait": 88.58158344980802,
+              "team": "A"
+            },
+            {
+              "name": "kineticno12",
+              "role": "SENTINEL",
+              "rank": "ASCENDANT 3",
+              "rr": 55,
+              "mmr": 2055,
+              "wait": 78.72193622805935,
+              "team": "A"
+            },
+            {
+              "name": "novama15",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 42,
+              "mmr": 2042,
+              "wait": 56.343320470434264,
+              "team": "B"
+            },
+            {
+              "name": "northlo9",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 80,
+              "mmr": 1980,
+              "wait": 130.7874162628559,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 72.37136377547903,
+              "high": 74.46569866968868
+            },
+            "p95QueueSeconds": {
+              "low": 256.63991300289587,
+              "high": 263.8261456575455
+            },
+            "spread": {
+              "low": 271.56709113214765,
+              "high": 274.48640886785233
+            },
+            "teamGap": {
+              "low": 0.7166870329836542,
+              "high": 0.8364129670163453
+            },
+            "badMatchRate": {
+              "low": 34.20932040462435,
+              "high": 36.34067959537563
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "late-policy-tradeoff-integrity",
+      "scenarioId": "late-policy-tradeoff",
+      "label": "Late-night population / policy comparison",
+      "population": 50,
+      "traffic": "late",
+      "policy": "integrity",
+      "seed": 20260904,
+      "runs": 8,
+      "matchesPerRun": 500,
+      "comparison": {
+        "baseline": {
+          "algorithm": "baseline",
+          "queueSeconds": 89.50153526564301,
+          "p95QueueSeconds": 310.79520672510284,
+          "spread": 223.52524999999997,
+          "teamGap": 10.022499999999997,
+          "badMatchRate": 17.075,
+          "playersGenerated": 40055,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "vantaki85",
+              "role": "FLEX",
+              "rank": "IMMORTAL 3",
+              "rr": 11,
+              "mmr": 2411,
+              "wait": 190.7801008121678,
+              "team": "A"
+            },
+            {
+              "name": "northlo87",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 3",
+              "rr": 72,
+              "mmr": 2372,
+              "wait": 172.11018705795868,
+              "team": "B"
+            },
+            {
+              "name": "orbitso84",
+              "role": "FLEX",
+              "rank": "IMMORTAL 3",
+              "rr": 71,
+              "mmr": 2371,
+              "wait": 220.0722628509393,
+              "team": "B"
+            },
+            {
+              "name": "ghostdr0",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 3",
+              "rr": 58,
+              "mmr": 2358,
+              "wait": 26.236414867365966,
+              "team": "A"
+            },
+            {
+              "name": "makova82",
+              "role": "FLEX",
+              "rank": "IMMORTAL 3",
+              "rr": 30,
+              "mmr": 2330,
+              "wait": 239.13336934358085,
+              "team": "A"
+            },
+            {
+              "name": "tempono96",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 60,
+              "mmr": 2260,
+              "wait": 50.14309056779166,
+              "team": "B"
+            },
+            {
+              "name": "novama93",
+              "role": "DUELIST",
+              "rank": "IMMORTAL 2",
+              "rr": 51,
+              "mmr": 2251,
+              "wait": 97.47183177821717,
+              "team": "B"
+            },
+            {
+              "name": "rookpi89",
+              "role": "FLEX",
+              "rank": "IMMORTAL 2",
+              "rr": 25,
+              "mmr": 2225,
+              "wait": 143.11629701202764,
+              "team": "A"
+            },
+            {
+              "name": "makova1",
+              "role": "FLEX",
+              "rank": "IMMORTAL 2",
+              "rr": 23,
+              "mmr": 2223,
+              "wait": 3.715322217758512,
+              "team": "A"
+            },
+            {
+              "name": "runete95",
+              "role": "SENTINEL",
+              "rank": "IMMORTAL 2",
+              "rr": 9,
+              "mmr": 2209,
+              "wait": 53.574267424039135,
+              "team": "B"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 88.87323508321762,
+              "high": 90.1298354480684
+            },
+            "p95QueueSeconds": {
+              "low": 305.3241564038132,
+              "high": 316.26625704639247
+            },
+            "spread": {
+              "low": 221.8893421089193,
+              "high": 225.16115789108065
+            },
+            "teamGap": {
+              "low": 9.86281463511016,
+              "high": 10.182185364889834
+            },
+            "badMatchRate": {
+              "low": 16.280785293513144,
+              "high": 17.869214706486854
+            }
+          }
+        },
+        "adaptive": {
+          "algorithm": "tail-aware",
+          "queueSeconds": 105.78248330356868,
+          "p95QueueSeconds": 356.9894872404418,
+          "spread": 198.04625000000001,
+          "teamGap": 0.5755000000000053,
+          "badMatchRate": 14.85,
+          "playersGenerated": 40065,
+          "matchesSimulated": 4000,
+          "players": [
+            {
+              "name": "zerofoxor14",
+              "role": "CONTROLLER",
+              "rank": "IMMORTAL 1",
+              "rr": 22,
+              "mmr": 2122,
+              "wait": 141.4329310598805,
+              "team": "A"
+            },
+            {
+              "name": "lotusru27",
+              "role": "INITIATOR",
+              "rank": "IMMORTAL 1",
+              "rr": 6,
+              "mmr": 2106,
+              "wait": 2.1889489362438326,
+              "team": "B"
+            },
+            {
+              "name": "echoze15",
+              "role": "DUELIST",
+              "rank": "ASCENDANT 3",
+              "rr": 68,
+              "mmr": 2068,
+              "wait": 125.98924513589373,
+              "team": "A"
+            },
+            {
+              "name": "pixelgh25",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 68,
+              "mmr": 2068,
+              "wait": 52.06205838240203,
+              "team": "B"
+            },
+            {
+              "name": "northlo10",
+              "role": "DUELIST",
+              "rank": "ASCENDANT 3",
+              "rr": 46,
+              "mmr": 2046,
+              "wait": 154.46172251372627,
+              "team": "A"
+            },
+            {
+              "name": "kineticno94",
+              "role": "INITIATOR",
+              "rank": "ASCENDANT 3",
+              "rr": 31,
+              "mmr": 2031,
+              "wait": 263.97335288236354,
+              "team": "A"
+            },
+            {
+              "name": "rookpi12",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 21,
+              "mmr": 2021,
+              "wait": 151.07233782011463,
+              "team": "B"
+            },
+            {
+              "name": "rookpi93",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 13,
+              "mmr": 2013,
+              "wait": 287.7718337482438,
+              "team": "B"
+            },
+            {
+              "name": "vantaki24",
+              "role": "CONTROLLER",
+              "rank": "ASCENDANT 3",
+              "rr": 12,
+              "mmr": 2012,
+              "wait": 76.54778315097064,
+              "team": "B"
+            },
+            {
+              "name": "runete18",
+              "role": "DUELIST",
+              "rank": "ASCENDANT 3",
+              "rr": 56,
+              "mmr": 1956,
+              "wait": 93.88587545921837,
+              "team": "A"
+            }
+          ],
+          "runs": 8,
+          "confidence": {
+            "queueSeconds": {
+              "low": 105.45505516288122,
+              "high": 106.10991144425614
+            },
+            "p95QueueSeconds": {
+              "low": 352.5518361686546,
+              "high": 361.42713831222903
+            },
+            "spread": {
+              "low": 195.7965316830323,
+              "high": 200.29596831696773
+            },
+            "teamGap": {
+              "low": 0.5383409194946962,
+              "high": 0.6126590805053145
+            },
+            "badMatchRate": {
+              "low": 13.681607942512445,
+              "high": 16.018392057487553
+            }
+          }
+        }
+      }
+    }
+  ]
+}
