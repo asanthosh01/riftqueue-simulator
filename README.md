@@ -24,10 +24,13 @@ matchmaking.
 
 ## Current Result
 
-Under the default simulated scenario, Tail-Aware reduced the bad-match rate
-from **39.9% to 19.6%** while adding **9 seconds** to median queue time.
+In the official Late-night / Balanced synthetic benchmark, Tail-Aware reduced
+the bad-match rate from **61.65% to 35.28%** while adding **10.95 seconds** to
+median queue time.
 
 This is a simulation result, not a claim about a production matchmaking system.
+See [`docs/results/findings.md`](docs/results/findings.md) for the full
+synthetic findings and limitations.
 
 ## Product Surface
 
