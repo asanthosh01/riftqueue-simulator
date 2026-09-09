@@ -5,6 +5,7 @@
 | Route | Responsibility |
 |---|---|
 | `/` | Recruiter-friendly project overview and key simulated findings |
+| `/findings` | Recruiter-friendly presentation of the committed synthetic benchmark findings |
 | `/simulator` | Primary 4,000-match experiment workflow and representative lobby |
 | `/experiments` | Ablation, sensitivity, Pareto, oracle, scale, and scenario studies |
 | `/runs` | Durable experiment history, reopening, and exports |
