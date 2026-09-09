@@ -34,7 +34,16 @@ type CompletedMatch = {
   waits: number[];
 };
 
-type QualitySample = Pick<CompletedMatch, "spread" | "teamGap">;
+export type QualitySample = Pick<CompletedMatch, "spread" | "teamGap">;
+
+export const REVIEW_METRICS = [
+  "queueSeconds",
+  "spread",
+  "teamGap",
+  "badMatchRate",
+] as const;
+
+export type ReviewMetric = (typeof REVIEW_METRICS)[number];
 
 export type MatchmakingResult = {
   algorithm: Algorithm;
@@ -43,12 +52,13 @@ export type MatchmakingResult = {
   spread: number;
   teamGap: number;
   badMatchRate: number;
+  // Legacy name: this is the arrival cursor when the match target was reached.
   playersGenerated: number;
   matchesSimulated: number;
   players: DisplayPlayer[];
 };
 
-type MatcherRunResult = MatchmakingResult & {
+export type MatcherRunResult = MatchmakingResult & {
   qualitySamples: QualitySample[];
 };
 
@@ -57,9 +67,26 @@ export type ComparisonResult = {
   adaptive: MatchmakingResult;
 };
 
+export type ExperimentTrial = ComparisonResult & {
+  trial: number;
+  seed: number;
+};
+
 export type ConfidenceInterval = {
   low: number;
   high: number;
+};
+
+export type PairedDifference = {
+  mean: number;
+  confidence: ConfidenceInterval;
+  trialDifferences: number[];
+};
+
+export type AblationTrial = {
+  trial: number;
+  seed: number;
+  variants: Record<AblationVariantId, MatcherRunResult>;
 };
 
 export type ExperimentResult = MatchmakingResult & {
@@ -350,7 +377,10 @@ function average(values: number[]) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function confidenceInterval(values: number[]): ConfidenceInterval {
+function confidenceInterval(
+  values: number[],
+  clampLowerBound = true,
+): ConfidenceInterval {
   const mean = average(values);
   if (values.length < 2) return { low: mean, high: mean };
   const sampleVariance =
@@ -358,9 +388,72 @@ function confidenceInterval(values: number[]): ConfidenceInterval {
     (values.length - 1);
   const margin = 1.96 * (Math.sqrt(sampleVariance) / Math.sqrt(values.length));
   return {
-    low: Math.max(0, mean - margin),
+    low: clampLowerBound ? Math.max(0, mean - margin) : mean - margin,
     high: mean + margin,
   };
+}
+
+export function pairedDifference(
+  reference: number[],
+  comparison: number[],
+): PairedDifference {
+  if (reference.length === 0 || reference.length !== comparison.length) {
+    throw new Error("Paired comparisons require equally sized non-empty trial arrays.");
+  }
+
+  const trialDifferences = comparison.map(
+    (value, index) => value - reference[index],
+  );
+  return {
+    mean: average(trialDifferences),
+    confidence: pairedConfidenceInterval(trialDifferences),
+    trialDifferences,
+  };
+}
+
+function pairedConfidenceInterval(values: number[]): ConfidenceInterval {
+  const mean = average(values);
+  if (values.length < 2) return { low: mean, high: mean };
+  const sampleVariance =
+    values.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) /
+    (values.length - 1);
+  // Two-sided 95% Student's t critical values for small paired trial counts.
+  const criticalValue = [
+    0,
+    12.706,
+    4.303,
+    3.182,
+    2.776,
+    2.571,
+    2.447,
+    2.365,
+    2.306,
+    2.262,
+    2.228,
+    2.201,
+    2.179,
+    2.16,
+    2.145,
+    2.131,
+    2.12,
+    2.11,
+    2.101,
+    2.093,
+    2.086,
+    2.08,
+    2.074,
+    2.069,
+    2.064,
+    2.06,
+    2.056,
+    2.052,
+    2.048,
+    2.045,
+    2.042,
+  ][values.length - 1] ?? 1.96;
+  const margin = criticalValue * (Math.sqrt(sampleVariance) / Math.sqrt(values.length));
+
+  return { low: mean - margin, high: mean + margin };
 }
 
 function generatedHandle(id: number) {
@@ -807,6 +900,41 @@ export function aggregateExperimentComparisons(
   };
 }
 
+export function runExperimentTrials({
+  population,
+  traffic,
+  policy,
+  seed,
+  runs = RUN_COUNT,
+  matchesPerRun = MATCHES_PER_RUN,
+}: {
+  population: number;
+  traffic: Traffic;
+  policy: Policy;
+  seed: number;
+  runs?: number;
+  matchesPerRun?: number;
+}): ExperimentTrial[] {
+  const trials: ExperimentTrial[] = [];
+
+  for (let run = 0; run < runs; run += 1) {
+    const trialSeed = seed + run * 7_919;
+    trials.push({
+      trial: run + 1,
+      seed: trialSeed,
+      ...runComparison({
+        population,
+        traffic,
+        policy,
+        seed: trialSeed,
+        targetMatches: matchesPerRun,
+      }),
+    });
+  }
+
+  return trials;
+}
+
 export function runExperimentSuite({
   population,
   traffic,
@@ -822,19 +950,16 @@ export function runExperimentSuite({
   runs?: number;
   matchesPerRun?: number;
 }): ExperimentComparison {
-  const comparisons: ComparisonResult[] = [];
-
-  for (let run = 0; run < runs; run += 1) {
-    comparisons.push(runComparison({
+  return aggregateExperimentComparisons(
+    runExperimentTrials({
       population,
       traffic,
       policy,
-      seed: seed + run * 7_919,
-      targetMatches: matchesPerRun,
-    }));
-  }
-
-  return aggregateExperimentComparisons(comparisons);
+      seed,
+      runs,
+      matchesPerRun,
+    }),
+  );
 }
 
 const ablationVariants: Array<{
@@ -869,6 +994,50 @@ const ablationVariants: Array<{
   },
 ];
 
+export function runAblationTrials({
+  population,
+  traffic,
+  policy,
+  seed,
+  runs = ABLATION_RUNS,
+  matchesPerRun = ABLATION_MATCHES_PER_RUN,
+}: {
+  population: number;
+  traffic: Traffic;
+  policy: Policy;
+  seed: number;
+  runs?: number;
+  matchesPerRun?: number;
+}): AblationTrial[] {
+  const trials: AblationTrial[] = [];
+
+  for (let run = 0; run < runs; run += 1) {
+    const trialSeed = seed + run * 7_919;
+    const arrivals = generateArrivals(
+      population,
+      traffic,
+      trialSeed,
+      matchesPerRun,
+    );
+    const variants = Object.fromEntries(
+      ablationVariants.map((variant) => [
+        variant.id,
+        runMatcher(
+          arrivals,
+          policy,
+          variant.selector,
+          variant.balancer,
+          matchesPerRun,
+        ),
+      ]),
+    ) as Record<AblationVariantId, MatcherRunResult>;
+
+    trials.push({ trial: run + 1, seed: trialSeed, variants });
+  }
+
+  return trials;
+}
+
 export function runAblationStudy({
   population,
   traffic,
@@ -888,24 +1057,16 @@ export function runAblationStudy({
     ablationVariants.map((variant) => [variant.id, [] as MatchmakingResult[]]),
   ) as Record<AblationVariantId, MatchmakingResult[]>;
 
-  for (let run = 0; run < runs; run += 1) {
-    const arrivals = generateArrivals(
-      population,
-      traffic,
-      seed + run * 7_919,
-      matchesPerRun,
-    );
-
+  for (const trial of runAblationTrials({
+    population,
+    traffic,
+    policy,
+    seed,
+    runs,
+    matchesPerRun,
+  })) {
     for (const variant of ablationVariants) {
-      results[variant.id].push(
-        runMatcher(
-          arrivals,
-          policy,
-          variant.selector,
-          variant.balancer,
-          matchesPerRun,
-        ),
-      );
+      results[variant.id].push(trial.variants[variant.id]);
     }
   }
 

@@ -22,10 +22,13 @@
 6. Eight independent trials are aggregated into means and 95% confidence intervals.
 7. The local benchmark runner calls the same experiment suite for the official
    scenario arms and writes a deterministic JSON report outside version control.
-8. `POST /api/experiments` applies a configurable, fixed-window rate limit before
+8. The local validation runner replays those locked scenarios with paired trial
+   metrics, ablation variants, and the existing threshold grid for review-only
+   JSON output.
+9. `POST /api/experiments` applies a configurable, fixed-window rate limit before
    creating a run. D1 stores only an HMAC-derived client bucket key, never a raw
    client address; listing, reopening, and download routes are not rate-limited.
-9. Server routes stream progress, persist completed experiment records in D1, and
+10. Server routes stream progress, persist completed experiment records in D1, and
    generate JSON or CSV exports.
 
 ## Trust boundaries

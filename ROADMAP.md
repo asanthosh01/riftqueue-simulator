@@ -15,9 +15,10 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 - [ ] Analyze the results and publish defensible synthetic findings.
 - [ ] Improve the website presentation of the published benchmark findings.
 
-The benchmark plan, runner, and reviewable official artifact are complete. The
-exact next recommended task is to analyze the synthetic benchmark results and
-publish defensible findings without making claims about production matchmaking.
+The benchmark plan, runner, official artifact, and paired validation suite are
+complete. The exact next recommended task is to analyze the synthetic benchmark
+results and publish defensible findings without making claims about production
+matchmaking.
 
 ## Completed foundation
 
