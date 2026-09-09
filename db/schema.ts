@@ -1,4 +1,4 @@
-import { index, integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { index, integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const experimentRuns = sqliteTable(
   "experiment_runs",
@@ -12,6 +12,7 @@ export const experimentRuns = sqliteTable(
     traffic: text("traffic", { enum: ["peak", "late", "overnight"] }).notNull(),
     policy: text("policy", { enum: ["fast", "balanced", "integrity"] }).notNull(),
     seed: integer("seed").notNull(),
+    idempotencyKey: text("idempotency_key"),
     runs: integer("runs").notNull(),
     matchesPerRun: integer("matches_per_run").notNull(),
     progress: integer("progress").notNull().default(0),
@@ -19,7 +20,10 @@ export const experimentRuns = sqliteTable(
     resultJson: text("result_json"),
     error: text("error"),
   },
-  (table) => [index("idx_experiment_runs_created_at").on(table.createdAt)],
+  (table) => [
+    index("idx_experiment_runs_created_at").on(table.createdAt),
+    uniqueIndex("idx_experiment_runs_idempotency_key").on(table.idempotencyKey),
+  ],
 );
 
 export const experimentRateLimits = sqliteTable(

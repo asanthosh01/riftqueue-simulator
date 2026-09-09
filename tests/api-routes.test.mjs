@@ -96,6 +96,7 @@ function databaseWithRateLimit() {
     traffic TEXT NOT NULL,
     policy TEXT NOT NULL,
     seed INTEGER NOT NULL,
+    idempotency_key TEXT,
     runs INTEGER NOT NULL,
     matches_per_run INTEGER NOT NULL,
     progress INTEGER NOT NULL,
@@ -103,6 +104,7 @@ function databaseWithRateLimit() {
     result_json TEXT,
     error TEXT
   )`);
+  database.exec("CREATE UNIQUE INDEX idx_experiment_runs_idempotency_key ON experiment_runs (idempotency_key)");
 
   return {
     rateLimitRows() {
@@ -118,6 +120,11 @@ function databaseWithRateLimit() {
           "INSERT INTO experiment_rate_limits (bucket_key, window_started_at, request_count) VALUES (?, ?, 1)",
         )
         .run(bucketKey, windowStartedAt);
+    },
+    experimentRuns() {
+      return database
+        .prepare("SELECT id, idempotency_key AS idempotencyKey FROM experiment_runs")
+        .all();
     },
     prepare(query) {
       return {
@@ -173,6 +180,7 @@ test("rate limits repeated experiment creation without storing a raw address", a
     headers: {
       "cf-connecting-ip": "203.0.113.42",
       "content-type": "application/json",
+      "idempotency-key": "rate-limit-test-key-0001",
     },
     body: JSON.stringify({
       population: 75,
@@ -201,7 +209,13 @@ test("rate limits repeated experiment creation without storing a raw address", a
     const rejected = await fetchWorker("/api/experiments", {
       database,
       environment,
-      request,
+      request: {
+        ...request,
+        headers: {
+          ...request.headers,
+          "idempotency-key": "rate-limit-test-key-0002",
+        },
+      },
     });
     assert.equal(rejected.status, 429);
     assert.equal(rejected.headers.get("retry-after"), "60");
@@ -220,6 +234,92 @@ test("rate limits repeated experiment creation without storing a raw address", a
   }
 });
 
+test("reuses an idempotent experiment request without storing the supplied key", async () => {
+  const database = databaseWithRateLimit();
+  const request = {
+    method: "POST",
+    headers: {
+      "cf-connecting-ip": "203.0.113.42",
+      "content-type": "application/json",
+      "idempotency-key": "idempotency-replay-key-0001",
+    },
+    body: JSON.stringify({
+      population: 75,
+      traffic: "late",
+      policy: "balanced",
+      seed: 4817,
+    }),
+  };
+  const environment = {
+    EXPERIMENT_RATE_LIMIT_SECRET: "test-only-secret",
+    EXPERIMENT_RATE_LIMIT_MAX_REQUESTS: "1",
+    EXPERIMENT_RATE_LIMIT_WINDOW_SECONDS: "60",
+  };
+
+  const created = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request,
+  });
+  assert.equal(created.status, 200);
+  await created.body?.cancel();
+
+  const replayed = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request,
+  });
+  assert.equal(replayed.status, 202);
+  assert.equal(replayed.headers.get("idempotency-replayed"), "true");
+  const reused = await replayed.json();
+  assert.equal(reused.reused, true);
+  assert.equal(reused.id, database.experimentRuns()[0].id);
+  assert.equal(database.experimentRuns().length, 1);
+  assert.match(database.experimentRuns()[0].idempotencyKey, /^[a-f0-9]{64}$/);
+  assert.doesNotMatch(database.experimentRuns()[0].idempotencyKey, /replay-key/);
+  assert.equal(database.rateLimitRows()[0].requestCount, 1);
+
+  const conflicting = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: {
+      ...request,
+      body: JSON.stringify({
+        population: 50,
+        traffic: "late",
+        policy: "balanced",
+        seed: 4817,
+      }),
+    },
+  });
+  assert.equal(conflicting.status, 409);
+  assert.deepEqual(await conflicting.json(), {
+    error: "This Idempotency-Key is already associated with a different experiment.",
+  });
+});
+
+test("requires a valid idempotency key before creating an experiment", async () => {
+  const response = await fetchWorker("/api/experiments", {
+    database: databaseWithRateLimit(),
+    environment: { EXPERIMENT_RATE_LIMIT_SECRET: "test-only-secret" },
+    request: {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        population: 75,
+        traffic: "late",
+        policy: "balanced",
+        seed: 4817,
+      }),
+    },
+  });
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), {
+    error: "Send an Idempotency-Key with 16 to 128 letters, numbers, dots, underscores, or hyphens.",
+  });
+});
+
 test("fails closed when rate-limit configuration is invalid", async () => {
   const response = await fetchWorker("/api/experiments", {
     environment: {
@@ -228,7 +328,10 @@ test("fails closed when rate-limit configuration is invalid", async () => {
     },
     request: {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        "idempotency-key": "invalid-rate-limit-test-key",
+      },
       body: JSON.stringify({
         population: 75,
         traffic: "late",
