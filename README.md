@@ -111,6 +111,12 @@ The browser generates one automatically. Retrying the same key and scenario
 returns the existing run instead of starting another simulation; the server
 stores only an HMAC-derived key, never the supplied value or a raw address.
 
+Saved runs belong to an anonymous, `HttpOnly` browser session. D1 stores only
+an HMAC-derived ownership key, never the session token. A visitor can list,
+reopen, and export only runs created in that browser session; local HTTP
+development remains supported because the cookie is marked `Secure` only over
+HTTPS.
+
 ## Validate Changes
 
 Linux or Codex cloud:
