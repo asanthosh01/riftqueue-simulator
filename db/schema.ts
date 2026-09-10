@@ -5,7 +5,7 @@ export const experimentRuns = sqliteTable(
   {
     id: text("id").primaryKey(),
     createdAt: integer("created_at").notNull(),
-    status: text("status", { enum: ["queued", "running", "completed", "failed"] })
+    status: text("status", { enum: ["creating", "queued", "running", "completed", "failed"] })
       .notNull()
       .default("queued"),
     population: integer("population").notNull(),

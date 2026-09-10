@@ -91,7 +91,7 @@ const trafficOptions: Array<{ value: Traffic; label: string; detail: string }> =
 type SavedRunSummary = {
   id: string;
   createdAt: number;
-  status: "queued" | "running" | "completed" | "failed";
+  status: "creating" | "queued" | "running" | "completed" | "failed";
   population: number;
   traffic: Traffic;
   policy: Policy;

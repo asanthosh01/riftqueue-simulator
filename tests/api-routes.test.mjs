@@ -81,8 +81,13 @@ async function fetchWorker(pathname, options = {}) {
   );
 }
 
-function databaseWithRateLimit() {
+function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = {}) {
   const database = new DatabaseSync(":memory:");
+  let idempotencyReadCount = 0;
+  let releaseIdempotencyReads;
+  const idempotencyReadsReady = new Promise((resolve) => {
+    releaseIdempotencyReads = resolve;
+  });
   database.exec(`CREATE TABLE experiment_rate_limits (
     bucket_key TEXT PRIMARY KEY NOT NULL,
     window_started_at INTEGER NOT NULL,
@@ -131,6 +136,15 @@ function databaseWithRateLimit() {
         bind(...values) {
           return {
             async first() {
+              if (
+                synchronizeInitialIdempotencyReads &&
+                /FROM experiment_runs\s+WHERE idempotency_key/.test(query) &&
+                idempotencyReadCount < 2
+              ) {
+                idempotencyReadCount += 1;
+                if (idempotencyReadCount === 2) releaseIdempotencyReads();
+                await idempotencyReadsReady;
+              }
               return database.prepare(query).get(...values) ?? null;
             },
             async run() {
@@ -296,6 +310,47 @@ test("reuses an idempotent experiment request without storing the supplied key",
   assert.deepEqual(await conflicting.json(), {
     error: "This Idempotency-Key is already associated with a different experiment.",
   });
+});
+
+test("concurrent duplicate experiment requests reuse one reservation and rate-limit slot", async () => {
+  const database = databaseWithRateLimit({ synchronizeInitialIdempotencyReads: true });
+  const request = {
+    method: "POST",
+    headers: {
+      "cf-connecting-ip": "203.0.113.42",
+      "content-type": "application/json",
+      "idempotency-key": "concurrent-idempotency-key-0001",
+    },
+    body: JSON.stringify({
+      population: 75,
+      traffic: "late",
+      policy: "balanced",
+      seed: 4817,
+    }),
+  };
+  const environment = {
+    EXPERIMENT_RATE_LIMIT_SECRET: "test-only-secret",
+    EXPERIMENT_RATE_LIMIT_MAX_REQUESTS: "1",
+    EXPERIMENT_RATE_LIMIT_WINDOW_SECONDS: "60",
+  };
+
+  const [first, second] = await Promise.all([
+    fetchWorker("/api/experiments", { database, environment, request }),
+    fetchWorker("/api/experiments", { database, environment, request }),
+  ]);
+  const responses = [first, second];
+  assert.deepEqual(responses.map((response) => response.status).sort(), [200, 202]);
+
+  const replay = responses.find((response) => response.status === 202);
+  assert.ok(replay);
+  assert.equal(replay.headers.get("idempotency-replayed"), "true");
+  const replayedRun = await replay.json();
+  assert.equal(replayedRun.id, database.experimentRuns()[0].id);
+  assert.equal(database.experimentRuns().length, 1);
+  assert.equal(database.rateLimitRows()[0].requestCount, 1);
+
+  const stream = responses.find((response) => response.status === 200);
+  await stream?.body?.cancel();
 });
 
 test("requires a valid idempotency key before creating an experiment", async () => {

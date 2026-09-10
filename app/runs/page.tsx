@@ -11,7 +11,7 @@ import type { Policy, Traffic } from "@/lib/matchmaking";
 type SavedRun = {
   id: string;
   createdAt: number;
-  status: "queued" | "running" | "completed" | "failed";
+  status: "creating" | "queued" | "running" | "completed" | "failed";
   population: number;
   traffic: Traffic;
   policy: Policy;

@@ -29,7 +29,8 @@
 9. `POST /api/experiments` requires a client `Idempotency-Key` and applies a
    configurable, fixed-window rate limit before creating a run. D1 stores only
    HMAC-derived rate-limit and idempotency keys, never raw addresses or supplied
-   keys; duplicate requests return the existing run rather than another stream.
+   keys. A unique D1 reservation is created before rate limiting, so concurrent
+   duplicates return the same pending run without spending another rate-limit slot.
 10. Server routes stream progress, persist completed experiment records in D1, and
    generate JSON or CSV exports.
 

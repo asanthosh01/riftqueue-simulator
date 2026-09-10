@@ -29,7 +29,7 @@ const idempotencyKeyPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{15,127}$/;
 
 type ExistingIdempotentRun = z.infer<typeof experimentRequest> & {
   id: string;
-  status: "queued" | "running" | "completed" | "failed";
+  status: "creating" | "queued" | "running" | "completed" | "failed";
   progress: number;
 };
 
@@ -76,6 +76,14 @@ function idempotentRunResponse(existing: ExistingIdempotentRun) {
       headers: { "idempotency-replayed": "true" },
     },
   );
+}
+
+async function discardCreatingRun(id: string) {
+  await env.DB.prepare(
+    "DELETE FROM experiment_runs WHERE id = ? AND status = 'creating'",
+  )
+    .bind(id)
+    .run();
 }
 
 export async function GET() {
@@ -153,29 +161,6 @@ export async function POST(request: Request) {
     );
   }
 
-  try {
-    const rateLimit = await takeExperimentRateLimitSlot({
-      database: env.DB,
-      request,
-      configuration: rateLimitConfiguration,
-    });
-    if (!rateLimit.allowed) {
-      return json(
-        { error: "Too many experiment requests. Try again later." },
-        {
-          status: 429,
-          headers: { "retry-after": String(rateLimit.retryAfterSeconds) },
-        },
-      );
-    }
-  } catch (error) {
-    console.error("Failed to apply experiment rate limit", error);
-    return json(
-      { error: "Experiment creation is temporarily unavailable." },
-      { status: 503 },
-    );
-  }
-
   const id = crypto.randomUUID();
   const createdAt = Date.now();
   try {
@@ -183,7 +168,7 @@ export async function POST(request: Request) {
       `INSERT INTO experiment_runs
         (id, created_at, status, population, traffic, policy, seed, idempotency_key, runs,
          matches_per_run, progress)
-       VALUES (?, ?, 'queued', ?, ?, ?, ?, ?, ?, ?, 0)
+       VALUES (?, ?, 'creating', ?, ?, ?, ?, ?, ?, ?, 0)
        ON CONFLICT(idempotency_key) DO NOTHING
        RETURNING id`,
     )
@@ -221,6 +206,52 @@ export async function POST(request: Request) {
       },
       { status: 500 },
     );
+  }
+
+  try {
+    const rateLimit = await takeExperimentRateLimitSlot({
+      database: env.DB,
+      request,
+      configuration: rateLimitConfiguration,
+    });
+    if (!rateLimit.allowed) {
+      await discardCreatingRun(id);
+      return json(
+        { error: "Too many experiment requests. Try again later." },
+        {
+          status: 429,
+          headers: { "retry-after": String(rateLimit.retryAfterSeconds) },
+        },
+      );
+    }
+  } catch (error) {
+    console.error("Failed to apply experiment rate limit", error);
+    try {
+      await discardCreatingRun(id);
+    } catch (cleanupError) {
+      console.error("Failed to discard pending experiment run", cleanupError);
+    }
+    return json(
+      { error: "Experiment creation is temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
+  try {
+    await env.DB.prepare(
+      "UPDATE experiment_runs SET status = 'queued' WHERE id = ? AND status = 'creating'",
+    )
+      .bind(id)
+      .run();
+  } catch (error) {
+    console.error("Failed to activate experiment run", error);
+    try {
+      await discardCreatingRun(id);
+    } catch (cleanupError) {
+      console.error("Failed to discard pending experiment run", cleanupError);
+    }
+    return json(
+      { error: "The experiment record could not be created." }, { status: 500 });
   }
 
   const encoder = new TextEncoder();
