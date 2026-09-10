@@ -17,8 +17,8 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 
 The benchmark plan, runner, official artifact, paired validation suite, and
 recruiter-readable synthetic findings and website presentation are complete.
-The exact next recommended task is to scope public saved-run history so visitors
-do not share one noisy global feed before considering a public demo.
+The exact next recommended task is to add bounded retention for completed and
+failed experiment records before considering a public demo.
 
 ## Completed foundation
 
@@ -53,7 +53,8 @@ official reproducible synthetic scenarios and their reporting protocol.
 
 - [x] Add server-side rate limiting for anonymous experiment creation.
 - [x] Add idempotency protection for duplicate run requests.
-- [ ] Scope public saved-run history so visitors do not share one noisy global feed.
+- [x] Scope public saved-run history so visitors do not share one noisy global feed,
+  including a no-side-effect first-visit session handshake.
 - [ ] Add bounded retention for completed and failed experiment records.
 - [ ] Audit API errors, response sizes, and expensive inputs.
 - [ ] Complete the public-release checklist before changing site access.

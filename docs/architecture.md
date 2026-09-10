@@ -31,8 +31,13 @@
    HMAC-derived rate-limit and idempotency keys, never raw addresses or supplied
    keys. A unique D1 reservation is created before rate limiting, so concurrent
    duplicates return the same pending run without spending another rate-limit slot.
-10. Server routes stream progress, persist completed experiment records in D1, and
-   generate JSON or CSV exports.
+10. A first attempted experiment POST establishes an anonymous `HttpOnly` browser
+    session and returns `428` without creating a record or using quota. The
+    browser shares that initialization, then retries with the same idempotency
+    key. D1 stores only an HMAC-derived ownership key, and list, detail, and
+    export routes filter by it so visitors cannot access each other's runs.
+11. Server routes stream progress, persist completed experiment records in D1, and
+    generate JSON or CSV exports.
 
 ## Trust boundaries
 

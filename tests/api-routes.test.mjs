@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHmac } from "node:crypto";
 import { registerHooks } from "node:module";
 import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
@@ -36,6 +37,19 @@ const savedComparison = {
     matchesSimulated: 4000,
   },
 };
+const sessionSecret = "test-only-secret";
+const visitorOneToken = "11111111-1111-4111-8111-111111111111";
+const visitorTwoToken = "22222222-2222-4222-8222-222222222222";
+
+function visitorCookie(token) {
+  return `riftqueue_session=${token}`;
+}
+
+function ownerKey(token) {
+  return createHmac("sha256", sessionSecret)
+    .update(`owner:${token}`)
+    .digest("hex");
+}
 
 function databaseWithCompletedRun() {
   return {
@@ -102,6 +116,7 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
     policy TEXT NOT NULL,
     seed INTEGER NOT NULL,
     idempotency_key TEXT,
+    owner_key TEXT,
     runs INTEGER NOT NULL,
     matches_per_run INTEGER NOT NULL,
     progress INTEGER NOT NULL,
@@ -128,8 +143,18 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
     },
     experimentRuns() {
       return database
-        .prepare("SELECT id, idempotency_key AS idempotencyKey FROM experiment_runs")
+        .prepare("SELECT id, idempotency_key AS idempotencyKey, owner_key AS ownerKey FROM experiment_runs")
         .all();
+    },
+    seedCompletedRun({ id, ownerKey: runOwnerKey, seed }) {
+      database
+        .prepare(
+          `INSERT INTO experiment_runs
+            (id, created_at, status, population, traffic, policy, seed, owner_key, runs,
+             matches_per_run, progress, result_json)
+           VALUES (?, ?, 'completed', 75, 'late', 'balanced', ?, ?, 8, 500, 100, ?)`,
+        )
+        .run(id, Date.now(), seed, runOwnerKey, JSON.stringify(savedComparison));
     },
     prepare(query) {
       return {
@@ -147,6 +172,9 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
               }
               return database.prepare(query).get(...values) ?? null;
             },
+            async all() {
+              return { results: database.prepare(query).all(...values) };
+            },
             async run() {
               database.prepare(query).run(...values);
               return {};
@@ -161,6 +189,10 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
 test("downloads a saved experiment as JSON", async () => {
   const response = await fetchWorker(
     "/api/experiments/saved-run/download?format=json",
+    {
+      environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+      request: { headers: { cookie: visitorCookie(visitorOneToken) } },
+    },
   );
 
   assert.equal(response.status, 200);
@@ -177,6 +209,10 @@ test("downloads a saved experiment as JSON", async () => {
 test("downloads a saved experiment as CSV", async () => {
   const response = await fetchWorker(
     "/api/experiments/saved-run/download?format=csv",
+    {
+      environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+      request: { headers: { cookie: visitorCookie(visitorOneToken) } },
+    },
   );
 
   assert.equal(response.status, 200);
@@ -184,6 +220,226 @@ test("downloads a saved experiment as CSV", async () => {
   const body = await response.text();
   assert.match(body, /algorithm,population,traffic,policy/);
   assert.match(body, /"tail-aware","75","late","balanced"/);
+});
+
+test("initializes an anonymous session before creating a run or using quota", async () => {
+  const database = databaseWithRateLimit();
+  const response = await fetchWorker("/api/experiments", {
+    database,
+    environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+    request: {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "idempotency-key": "anonymous-session-test-key-0001",
+      },
+      body: JSON.stringify({
+        population: 75,
+        traffic: "late",
+        policy: "balanced",
+        seed: 4817,
+      }),
+    },
+  });
+
+  assert.equal(response.status, 428);
+  assert.equal(response.headers.get("x-riftqueue-session-initialized"), "true");
+  const setCookie = response.headers.get("set-cookie") ?? "";
+  assert.match(setCookie, /^riftqueue_session=[0-9a-f-]+; Path=\//i);
+  assert.match(setCookie, /HttpOnly; SameSite=Lax/);
+  assert.doesNotMatch(setCookie, /; Secure/);
+  assert.deepEqual(await response.json(), {
+    error: "Anonymous session initialized. Retry this request.",
+  });
+  assert.equal(database.experimentRuns().length, 0);
+  assert.equal(database.rateLimitRows().length, 0);
+});
+
+test("retries an initialized session with one stored ownership digest", async () => {
+  const database = databaseWithRateLimit();
+  const request = {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "idempotency-key": "anonymous-session-test-key-0001",
+    },
+    body: JSON.stringify({
+      population: 75,
+      traffic: "late",
+      policy: "balanced",
+      seed: 4817,
+    }),
+  };
+  const options = {
+    database,
+    environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+    request,
+  };
+
+  const initialized = await fetchWorker("/api/experiments", options);
+  assert.equal(initialized.status, 428);
+  const sessionToken = initialized.headers
+    .get("set-cookie")
+    ?.match(/^riftqueue_session=([^;]+)/)?.[1];
+  assert.ok(sessionToken);
+  await initialized.body?.cancel();
+
+  const created = await fetchWorker("/api/experiments", {
+    ...options,
+    request: {
+      ...request,
+      headers: { ...request.headers, cookie: visitorCookie(sessionToken) },
+    },
+  });
+  assert.equal(created.status, 200);
+  assert.equal(database.experimentRuns().length, 1);
+  assert.equal(database.rateLimitRows()[0].requestCount, 1);
+  assert.match(database.experimentRuns()[0].ownerKey, /^[a-f0-9]{64}$/);
+  assert.doesNotMatch(database.experimentRuns()[0].ownerKey, new RegExp(sessionToken));
+  await created.body?.cancel();
+});
+
+test("concurrent first-visit requests only initialize sessions", async () => {
+  const database = databaseWithRateLimit();
+  const request = {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "idempotency-key": "concurrent-session-init-key-0001",
+    },
+    body: JSON.stringify({
+      population: 75,
+      traffic: "late",
+      policy: "balanced",
+      seed: 4817,
+    }),
+  };
+
+  const responses = await Promise.all([
+    fetchWorker("/api/experiments", {
+      database,
+      environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+      request,
+    }),
+    fetchWorker("/api/experiments", {
+      database,
+      environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+      request,
+    }),
+  ]);
+
+  assert.deepEqual(responses.map((response) => response.status), [428, 428]);
+  assert.equal(database.experimentRuns().length, 0);
+  assert.equal(database.rateLimitRows().length, 0);
+  await Promise.all(responses.map((response) => response.body?.cancel()));
+});
+
+test("scopes idempotency keys to anonymous sessions rather than network addresses", async () => {
+  const database = databaseWithRateLimit();
+  const environment = {
+    EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret,
+    EXPERIMENT_RATE_LIMIT_MAX_REQUESTS: "3",
+  };
+  const request = {
+    method: "POST",
+    headers: {
+      "cf-connecting-ip": "203.0.113.42",
+      "content-type": "application/json",
+      "idempotency-key": "shared-idempotency-value-0001",
+    },
+    body: JSON.stringify({
+      population: 75,
+      traffic: "late",
+      policy: "balanced",
+      seed: 4817,
+    }),
+  };
+
+  const visitorOneResponse = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: {
+      ...request,
+      headers: { ...request.headers, cookie: visitorCookie(visitorOneToken) },
+    },
+  });
+  const visitorTwoResponse = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: {
+      ...request,
+      headers: { ...request.headers, cookie: visitorCookie(visitorTwoToken) },
+    },
+  });
+
+  assert.equal(visitorOneResponse.status, 200);
+  assert.equal(visitorTwoResponse.status, 200);
+  assert.equal(database.experimentRuns().length, 2);
+  await visitorOneResponse.body?.cancel();
+  await visitorTwoResponse.body?.cancel();
+});
+
+test("isolates anonymous visitors from other saved-run histories and exports", async () => {
+  const database = databaseWithRateLimit();
+  database.seedCompletedRun({
+    id: "visitor-one-run",
+    ownerKey: ownerKey(visitorOneToken),
+    seed: 4817,
+  });
+  database.seedCompletedRun({
+    id: "visitor-two-run",
+    ownerKey: ownerKey(visitorTwoToken),
+    seed: 9264,
+  });
+  const environment = { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret };
+  const visitorOne = { headers: { cookie: visitorCookie(visitorOneToken) } };
+  const visitorTwo = { headers: { cookie: visitorCookie(visitorTwoToken) } };
+
+  const visitorOneHistory = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: visitorOne,
+  });
+  assert.deepEqual(
+    (await visitorOneHistory.json()).runs.map((run) => run.id),
+    ["visitor-one-run"],
+  );
+
+  const visitorTwoHistory = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: visitorTwo,
+  });
+  assert.deepEqual(
+    (await visitorTwoHistory.json()).runs.map((run) => run.id),
+    ["visitor-two-run"],
+  );
+
+  const ownRun = await fetchWorker("/api/experiments/visitor-one-run", {
+    database,
+    environment,
+    request: visitorOne,
+  });
+  assert.equal(ownRun.status, 200);
+
+  const otherRun = await fetchWorker("/api/experiments/visitor-one-run", {
+    database,
+    environment,
+    request: visitorTwo,
+  });
+  assert.equal(otherRun.status, 404);
+
+  const ownExport = await fetchWorker(
+    "/api/experiments/visitor-one-run/download?format=json",
+    { database, environment, request: visitorOne },
+  );
+  assert.equal(ownExport.status, 200);
+
+  const otherExport = await fetchWorker(
+    "/api/experiments/visitor-one-run/download?format=json",
+    { database, environment, request: visitorTwo },
+  );
+  assert.equal(otherExport.status, 404);
 });
 
 test("rate limits repeated experiment creation without storing a raw address", async () => {
@@ -194,6 +450,7 @@ test("rate limits repeated experiment creation without storing a raw address", a
     headers: {
       "cf-connecting-ip": "203.0.113.42",
       "content-type": "application/json",
+      cookie: visitorCookie(visitorOneToken),
       "idempotency-key": "rate-limit-test-key-0001",
     },
     body: JSON.stringify({
@@ -255,6 +512,7 @@ test("reuses an idempotent experiment request without storing the supplied key",
     headers: {
       "cf-connecting-ip": "203.0.113.42",
       "content-type": "application/json",
+      cookie: visitorCookie(visitorOneToken),
       "idempotency-key": "idempotency-replay-key-0001",
     },
     body: JSON.stringify({
@@ -319,6 +577,7 @@ test("concurrent duplicate experiment requests reuse one reservation and rate-li
     headers: {
       "cf-connecting-ip": "203.0.113.42",
       "content-type": "application/json",
+      cookie: visitorCookie(visitorOneToken),
       "idempotency-key": "concurrent-idempotency-key-0001",
     },
     body: JSON.stringify({

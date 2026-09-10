@@ -1,5 +1,10 @@
 import { env } from "cloudflare:workers";
 
+import { getExperimentRateLimitConfiguration } from "@/lib/experiment-rate-limit";
+import {
+  experimentOwnerKey,
+  existingVisitorSession,
+} from "@/lib/experiment-session";
 import type { ExperimentComparison, Policy, Traffic } from "@/lib/matchmaking";
 
 function csvCell(value: string | number) {
@@ -19,12 +24,29 @@ export async function GET(
     );
   }
 
+  const sessionToken = existingVisitorSession(request);
+  if (!sessionToken) {
+    return Response.json({ error: "Completed experiment not found." }, { status: 404 });
+  }
+
+  let ownerKey: string;
+  try {
+    const configuration = getExperimentRateLimitConfiguration(env);
+    ownerKey = await experimentOwnerKey(configuration.secret, sessionToken);
+  } catch (error) {
+    console.error("Failed to read experiment ownership state", error);
+    return Response.json(
+      { error: "Saved runs are temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
   const row = await env.DB.prepare(
     `SELECT id, population, traffic, policy, seed, result_json AS resultJson
        FROM experiment_runs
-      WHERE id = ? AND status = 'completed'`,
+      WHERE id = ? AND owner_key = ? AND status = 'completed'`,
   )
-    .bind(id)
+    .bind(id, ownerKey)
     .first<{
       id: string;
       population: number;

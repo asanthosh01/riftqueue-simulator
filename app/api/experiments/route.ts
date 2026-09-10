@@ -13,6 +13,11 @@ import {
   getExperimentRateLimitConfiguration,
   takeExperimentRateLimitSlot,
 } from "@/lib/experiment-rate-limit";
+import {
+  experimentOwnerKey,
+  existingVisitorSession,
+  visitorSession,
+} from "@/lib/experiment-session";
 
 const experimentRequest = z.object({
   population: z.union([
@@ -43,13 +48,13 @@ function json(data: unknown, init?: ResponseInit) {
   });
 }
 
-async function existingIdempotentRun(idempotencyKey: string) {
+async function existingIdempotentRun(idempotencyKey: string, ownerKey: string) {
   return env.DB.prepare(
     `SELECT id, status, progress, population, traffic, policy, seed
        FROM experiment_runs
-      WHERE idempotency_key = ?`,
+      WHERE idempotency_key = ? AND owner_key = ?`,
   )
-    .bind(idempotencyKey)
+    .bind(idempotencyKey, ownerKey)
     .first<ExistingIdempotentRun>();
 }
 
@@ -86,15 +91,33 @@ async function discardCreatingRun(id: string) {
     .run();
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const sessionToken = existingVisitorSession(request);
+  if (!sessionToken) return json({ runs: [] });
+
+  let ownerKey: string;
+  try {
+    const configuration = getExperimentRateLimitConfiguration(env);
+    ownerKey = await experimentOwnerKey(configuration.secret, sessionToken);
+  } catch (error) {
+    console.error("Failed to read experiment ownership state", error);
+    return json(
+      { error: "Saved runs are temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
   const rows = await env.DB.prepare(
     `SELECT id, created_at AS createdAt, status, population, traffic, policy,
             seed, runs, matches_per_run AS matchesPerRun, progress,
             duration_ms AS durationMs, error
        FROM experiment_runs
+      WHERE owner_key = ?
       ORDER BY created_at DESC
       LIMIT 8`,
-  ).all();
+  )
+    .bind(ownerKey)
+    .all();
 
   return json({ runs: rows.results });
 }
@@ -136,14 +159,40 @@ export async function POST(request: Request) {
     );
   }
 
+  const sessionToken = existingVisitorSession(request);
+  if (!sessionToken) {
+    const session = visitorSession(request);
+    return json(
+      { error: "Anonymous session initialized. Retry this request." },
+      {
+        status: 428,
+        headers: {
+          "set-cookie": session.setCookie ?? "",
+          "x-riftqueue-session-initialized": "true",
+        },
+      },
+    );
+  }
+
+  let ownerKey: string;
+  try {
+    ownerKey = await experimentOwnerKey(rateLimitConfiguration.secret, sessionToken);
+  } catch (error) {
+    console.error("Failed to derive experiment ownership state", error);
+    return json(
+      { error: "Experiment creation is temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
   let idempotencyKey: string;
   try {
     idempotencyKey = await experimentIdempotencyKey(
-      request,
       rateLimitConfiguration.secret,
+      ownerKey,
       suppliedIdempotencyKey,
     );
-    const existing = await existingIdempotentRun(idempotencyKey);
+    const existing = await existingIdempotentRun(idempotencyKey, ownerKey);
     if (existing) {
       if (!matchesExperiment(existing, input)) {
         return json(
@@ -166,9 +215,9 @@ export async function POST(request: Request) {
   try {
     const inserted = await env.DB.prepare(
       `INSERT INTO experiment_runs
-        (id, created_at, status, population, traffic, policy, seed, idempotency_key, runs,
+        (id, created_at, status, population, traffic, policy, seed, idempotency_key, owner_key, runs,
          matches_per_run, progress)
-       VALUES (?, ?, 'creating', ?, ?, ?, ?, ?, ?, ?, 0)
+       VALUES (?, ?, 'creating', ?, ?, ?, ?, ?, ?, ?, ?, 0)
        ON CONFLICT(idempotency_key) DO NOTHING
        RETURNING id`,
     )
@@ -180,13 +229,14 @@ export async function POST(request: Request) {
         input.policy,
         input.seed,
         idempotencyKey,
+        ownerKey,
         RUN_COUNT,
         MATCHES_PER_RUN,
       )
       .first<{ id: string }>();
 
     if (!inserted) {
-      const existing = await existingIdempotentRun(idempotencyKey);
+      const existing = await existingIdempotentRun(idempotencyKey, ownerKey);
       if (existing && matchesExperiment(existing, input)) {
         return idempotentRunResponse(existing);
       }

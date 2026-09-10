@@ -96,12 +96,11 @@ async function clientBucketKey(request: Request, secret: string) {
 }
 
 export async function experimentIdempotencyKey(
-  request: Request,
   secret: string,
+  ownerKey: string,
   idempotencyKey: string,
 ) {
-  // Scope an opaque, client-supplied key to the Cloudflare client boundary.
-  const clientAddress = request.headers.get("cf-connecting-ip") ?? "unknown-client";
+  // Keep request replays within the anonymous owner boundary, not an IP address.
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
@@ -113,7 +112,7 @@ export async function experimentIdempotencyKey(
     await crypto.subtle.sign(
       "HMAC",
       key,
-      new TextEncoder().encode(`idempotency:${clientAddress}:${idempotencyKey}`),
+      new TextEncoder().encode(`idempotency:${ownerKey}:${idempotencyKey}`),
     ),
   );
 }
