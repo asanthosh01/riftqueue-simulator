@@ -106,6 +106,11 @@ are never stored or returned. If `CF-Connecting-IP` is absent, requests share
 an `unknown-client` bucket; do not remove that Cloudflare edge header unless
 this shared fallback is acceptable.
 
+Every experiment creation request also requires an `Idempotency-Key` header.
+The browser generates one automatically. Retrying the same key and scenario
+returns the existing run instead of starting another simulation; the server
+stores only an HMAC-derived key, never the supplied value or a raw address.
+
 ## Validate Changes
 
 Linux or Codex cloud:

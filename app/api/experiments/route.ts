@@ -9,6 +9,7 @@ import {
   type ComparisonResult,
 } from "@/lib/matchmaking";
 import {
+  experimentIdempotencyKey,
   getExperimentRateLimitConfiguration,
   takeExperimentRateLimitSlot,
 } from "@/lib/experiment-rate-limit";
@@ -24,6 +25,13 @@ const experimentRequest = z.object({
   policy: z.enum(["fast", "balanced", "integrity"]),
   seed: z.number().int().nonnegative().max(2_147_483_647),
 });
+const idempotencyKeyPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{15,127}$/;
+
+type ExistingIdempotentRun = z.infer<typeof experimentRequest> & {
+  id: string;
+  status: "creating" | "queued" | "running" | "completed" | "failed";
+  progress: number;
+};
 
 function json(data: unknown, init?: ResponseInit) {
   return Response.json(data, {
@@ -33,6 +41,49 @@ function json(data: unknown, init?: ResponseInit) {
       ...init?.headers,
     },
   });
+}
+
+async function existingIdempotentRun(idempotencyKey: string) {
+  return env.DB.prepare(
+    `SELECT id, status, progress, population, traffic, policy, seed
+       FROM experiment_runs
+      WHERE idempotency_key = ?`,
+  )
+    .bind(idempotencyKey)
+    .first<ExistingIdempotentRun>();
+}
+
+function matchesExperiment(
+  existing: ExistingIdempotentRun,
+  input: z.infer<typeof experimentRequest>,
+) {
+  return existing.population === input.population &&
+    existing.traffic === input.traffic &&
+    existing.policy === input.policy &&
+    existing.seed === input.seed;
+}
+
+function idempotentRunResponse(existing: ExistingIdempotentRun) {
+  return json(
+    {
+      id: existing.id,
+      status: existing.status,
+      progress: existing.progress,
+      reused: true,
+    },
+    {
+      status: 202,
+      headers: { "idempotency-replayed": "true" },
+    },
+  );
+}
+
+async function discardCreatingRun(id: string) {
+  await env.DB.prepare(
+    "DELETE FROM experiment_runs WHERE id = ? AND status = 'creating'",
+  )
+    .bind(id)
+    .run();
 }
 
 export async function GET() {
@@ -64,6 +115,16 @@ export async function POST(request: Request) {
     );
   }
 
+  const suppliedIdempotencyKey = request.headers.get("idempotency-key")?.trim();
+  if (!suppliedIdempotencyKey || !idempotencyKeyPattern.test(suppliedIdempotencyKey)) {
+    return json(
+      {
+        error: "Send an Idempotency-Key with 16 to 128 letters, numbers, dots, underscores, or hyphens.",
+      },
+      { status: 400 },
+    );
+  }
+
   let rateLimitConfiguration;
   try {
     rateLimitConfiguration = getExperimentRateLimitConfiguration(env);
@@ -75,6 +136,78 @@ export async function POST(request: Request) {
     );
   }
 
+  let idempotencyKey: string;
+  try {
+    idempotencyKey = await experimentIdempotencyKey(
+      request,
+      rateLimitConfiguration.secret,
+      suppliedIdempotencyKey,
+    );
+    const existing = await existingIdempotentRun(idempotencyKey);
+    if (existing) {
+      if (!matchesExperiment(existing, input)) {
+        return json(
+          { error: "This Idempotency-Key is already associated with a different experiment." },
+          { status: 409 },
+        );
+      }
+      return idempotentRunResponse(existing);
+    }
+  } catch (error) {
+    console.error("Failed to read experiment idempotency state", error);
+    return json(
+      { error: "Experiment creation is temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
+  const id = crypto.randomUUID();
+  const createdAt = Date.now();
+  try {
+    const inserted = await env.DB.prepare(
+      `INSERT INTO experiment_runs
+        (id, created_at, status, population, traffic, policy, seed, idempotency_key, runs,
+         matches_per_run, progress)
+       VALUES (?, ?, 'creating', ?, ?, ?, ?, ?, ?, ?, 0)
+       ON CONFLICT(idempotency_key) DO NOTHING
+       RETURNING id`,
+    )
+      .bind(
+        id,
+        createdAt,
+        input.population,
+        input.traffic,
+        input.policy,
+        input.seed,
+        idempotencyKey,
+        RUN_COUNT,
+        MATCHES_PER_RUN,
+      )
+      .first<{ id: string }>();
+
+    if (!inserted) {
+      const existing = await existingIdempotentRun(idempotencyKey);
+      if (existing && matchesExperiment(existing, input)) {
+        return idempotentRunResponse(existing);
+      }
+      if (existing) {
+        return json(
+          { error: "This Idempotency-Key is already associated with a different experiment." },
+          { status: 409 },
+        );
+      }
+      throw new Error("The idempotency record could not be read.");
+    }
+  } catch (error) {
+    console.error("Failed to create experiment run", error);
+    return json(
+      {
+        error: "The experiment record could not be created.",
+      },
+      { status: 500 },
+    );
+  }
+
   try {
     const rateLimit = await takeExperimentRateLimitSlot({
       database: env.DB,
@@ -82,6 +215,7 @@ export async function POST(request: Request) {
       configuration: rateLimitConfiguration,
     });
     if (!rateLimit.allowed) {
+      await discardCreatingRun(id);
       return json(
         { error: "Too many experiment requests. Try again later." },
         {
@@ -92,40 +226,32 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     console.error("Failed to apply experiment rate limit", error);
+    try {
+      await discardCreatingRun(id);
+    } catch (cleanupError) {
+      console.error("Failed to discard pending experiment run", cleanupError);
+    }
     return json(
       { error: "Experiment creation is temporarily unavailable." },
       { status: 503 },
     );
   }
 
-  const id = crypto.randomUUID();
-  const createdAt = Date.now();
   try {
     await env.DB.prepare(
-      `INSERT INTO experiment_runs
-        (id, created_at, status, population, traffic, policy, seed, runs,
-         matches_per_run, progress)
-       VALUES (?, ?, 'queued', ?, ?, ?, ?, ?, ?, 0)`,
+      "UPDATE experiment_runs SET status = 'queued' WHERE id = ? AND status = 'creating'",
     )
-      .bind(
-        id,
-        createdAt,
-        input.population,
-        input.traffic,
-        input.policy,
-        input.seed,
-        RUN_COUNT,
-        MATCHES_PER_RUN,
-      )
+      .bind(id)
       .run();
   } catch (error) {
-    console.error("Failed to create experiment run", error);
+    console.error("Failed to activate experiment run", error);
+    try {
+      await discardCreatingRun(id);
+    } catch (cleanupError) {
+      console.error("Failed to discard pending experiment run", cleanupError);
+    }
     return json(
-      {
-        error: "The experiment record could not be created.",
-      },
-      { status: 500 },
-    );
+      { error: "The experiment record could not be created." }, { status: 500 });
   }
 
   const encoder = new TextEncoder();

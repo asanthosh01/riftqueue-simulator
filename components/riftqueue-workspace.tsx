@@ -91,7 +91,7 @@ const trafficOptions: Array<{ value: Traffic; label: string; detail: string }> =
 type SavedRunSummary = {
   id: string;
   createdAt: number;
-  status: "queued" | "running" | "completed" | "failed";
+  status: "creating" | "queued" | "running" | "completed" | "failed";
   population: number;
   traffic: Traffic;
   policy: Policy;
@@ -773,18 +773,62 @@ export function RiftQueueWorkspace({
       policy,
       seed: seed + 137,
     };
+    const idempotencyKey = crypto.randomUUID();
+
+    const applyCompletedExperiment = (saved: SavedExperiment) => {
+      if (!saved.result) throw new Error("The run ended before results were saved.");
+      setComparison(saved.result);
+      setSeed(nextScenario.seed);
+      setLastRunScenario(nextScenario);
+      setLastRunId(saved.id);
+      setRunProgress(100);
+    };
+
+    const resumeExistingExperiment = async (id: string) => {
+      for (let attempt = 0; attempt < 120; attempt += 1) {
+        const saved = await fetchSavedExperiment(id);
+        setLastRunId(saved.id);
+        setRunProgress(saved.progress);
+        if (saved.status === "completed") {
+          applyCompletedExperiment(saved);
+          return;
+        }
+        if (saved.status === "failed") {
+          throw new Error(saved.error ?? "The experiment failed.");
+        }
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+      throw new Error("The existing run is still processing. Check Saved Runs shortly.");
+    };
 
     try {
-      const response = await fetch("/api/experiments", {
+      const requestOptions = {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          "content-type": "application/json",
+          "idempotency-key": idempotencyKey,
+        },
         body: JSON.stringify(nextScenario),
-      });
+      };
+      let response: Response;
+      try {
+        response = await fetch("/api/experiments", requestOptions);
+      } catch {
+        response = await fetch("/api/experiments", requestOptions);
+      }
       if (!response.ok || !response.body) {
         const body = (await response.json().catch(() => null)) as
           | { error?: string }
           | null;
         throw new Error(body?.error ?? "The server could not start this run.");
+      }
+
+      if (response.status === 202) {
+        const reused = (await response.json()) as { id?: string };
+        if (!reused.id) throw new Error("The server could not resume this run.");
+        await resumeExistingExperiment(reused.id);
+        await refreshRunHistory();
+        return;
       }
 
       const reader = response.body.getReader();

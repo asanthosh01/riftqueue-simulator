@@ -95,6 +95,29 @@ async function clientBucketKey(request: Request, secret: string) {
   );
 }
 
+export async function experimentIdempotencyKey(
+  request: Request,
+  secret: string,
+  idempotencyKey: string,
+) {
+  // Scope an opaque, client-supplied key to the Cloudflare client boundary.
+  const clientAddress = request.headers.get("cf-connecting-ip") ?? "unknown-client";
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  return toHex(
+    await crypto.subtle.sign(
+      "HMAC",
+      key,
+      new TextEncoder().encode(`idempotency:${clientAddress}:${idempotencyKey}`),
+    ),
+  );
+}
+
 export async function takeExperimentRateLimitSlot({
   database,
   request,

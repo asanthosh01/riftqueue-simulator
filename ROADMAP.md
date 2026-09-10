@@ -17,8 +17,8 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 
 The benchmark plan, runner, official artifact, paired validation suite, and
 recruiter-readable synthetic findings and website presentation are complete.
-The exact next recommended task is to add idempotency protection for duplicate
-experiment-creation requests before considering a public demo.
+The exact next recommended task is to scope public saved-run history so visitors
+do not share one noisy global feed before considering a public demo.
 
 ## Completed foundation
 
@@ -52,7 +52,7 @@ official reproducible synthetic scenarios and their reporting protocol.
 ### Public-demo hardening
 
 - [x] Add server-side rate limiting for anonymous experiment creation.
-- [ ] Add idempotency protection for duplicate run requests.
+- [x] Add idempotency protection for duplicate run requests.
 - [ ] Scope public saved-run history so visitors do not share one noisy global feed.
 - [ ] Add bounded retention for completed and failed experiment records.
 - [ ] Audit API errors, response sizes, and expensive inputs.
