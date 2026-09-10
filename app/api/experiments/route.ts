@@ -22,6 +22,7 @@ import {
   cleanupExpiredExperimentRuns,
   getExperimentRetentionConfiguration,
 } from "@/lib/experiment-retention";
+import { PRIVATE_NO_STORE, privateJson } from "@/lib/experiment-api";
 
 const experimentRequest = z.object({
   population: z.union([
@@ -33,8 +34,9 @@ const experimentRequest = z.object({
   traffic: z.enum(["peak", "late", "overnight"]),
   policy: z.enum(["fast", "balanced", "integrity"]),
   seed: z.number().int().nonnegative().max(2_147_483_647),
-});
+}).strict();
 const idempotencyKeyPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{15,127}$/;
+const MAX_EXPERIMENT_REQUEST_BYTES = 1_024;
 
 type ExistingIdempotentRun = z.infer<typeof experimentRequest> & {
   id: string;
@@ -43,13 +45,59 @@ type ExistingIdempotentRun = z.infer<typeof experimentRequest> & {
 };
 
 function json(data: unknown, init?: ResponseInit) {
-  return Response.json(data, {
-    ...init,
-    headers: {
-      "cache-control": "no-store",
-      ...init?.headers,
-    },
-  });
+  return privateJson(data, init);
+}
+
+async function parseExperimentRequest(request: Request) {
+  const mediaType = request.headers.get("content-type")?.split(";", 1)[0]
+    ?.trim()
+    .toLowerCase();
+  if (mediaType !== "application/json") {
+    return { error: "Send the experiment request as application/json.", status: 415 };
+  }
+
+  const contentLength = request.headers.get("content-length");
+  if (contentLength && /^\d+$/.test(contentLength) && Number(contentLength) > MAX_EXPERIMENT_REQUEST_BYTES) {
+    return { error: "The experiment request is too large.", status: 413 };
+  }
+
+  const reader = request.body?.getReader();
+  if (!reader) return { error: "The experiment request was not valid JSON.", status: 400 };
+
+  const chunks: Uint8Array[] = [];
+  let byteLength = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      byteLength += value.byteLength;
+      if (byteLength > MAX_EXPERIMENT_REQUEST_BYTES) {
+        await reader.cancel();
+        return { error: "The experiment request is too large.", status: 413 };
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return { error: "The experiment request was not valid JSON.", status: 400 };
+  }
+
+  const body = new Uint8Array(byteLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  try {
+    return { input: experimentRequest.parse(JSON.parse(new TextDecoder().decode(body))) };
+  } catch (error) {
+    return {
+      error: error instanceof z.ZodError
+        ? "Choose a supported population, traffic level, policy, and seed."
+        : "The experiment request was not valid JSON.",
+      status: 400,
+    };
+  }
 }
 
 async function existingIdempotentRun(idempotencyKey: string, ownerKey: string) {
@@ -111,36 +159,32 @@ export async function GET(request: Request) {
     );
   }
 
-  const rows = await env.DB.prepare(
-    `SELECT id, created_at AS createdAt, status, population, traffic, policy,
-            seed, runs, matches_per_run AS matchesPerRun, progress,
-            duration_ms AS durationMs, error
-       FROM experiment_runs
-      WHERE owner_key = ?
-      ORDER BY created_at DESC
-      LIMIT 8`,
-  )
-    .bind(ownerKey)
-    .all();
+  let rows: { results: unknown[] };
+  try {
+    rows = await env.DB.prepare(
+      `SELECT id, created_at AS createdAt, status, population, traffic, policy,
+              seed, runs, matches_per_run AS matchesPerRun, progress,
+              duration_ms AS durationMs,
+              CASE WHEN error IS NULL THEN NULL ELSE 'The experiment failed.' END AS error
+         FROM experiment_runs
+        WHERE owner_key = ?
+        ORDER BY created_at DESC
+        LIMIT 8`,
+    )
+      .bind(ownerKey)
+      .all();
+  } catch (error) {
+    console.error("Failed to list saved experiments", error);
+    return json({ error: "Saved runs are temporarily unavailable." }, { status: 503 });
+  }
 
   return json({ runs: rows.results });
 }
 
 export async function POST(request: Request) {
-  let input: z.infer<typeof experimentRequest>;
-  try {
-    input = experimentRequest.parse(await request.json());
-  } catch (error) {
-    return json(
-      {
-        error:
-          error instanceof z.ZodError
-            ? "Choose a supported population, traffic level, policy, and seed."
-            : "The experiment request was not valid JSON.",
-      },
-      { status: 400 },
-    );
-  }
+  const parsedRequest = await parseExperimentRequest(request);
+  if ("error" in parsedRequest) return json({ error: parsedRequest.error }, { status: parsedRequest.status });
+  const input = parsedRequest.input;
 
   const suppliedIdempotencyKey = request.headers.get("idempotency-key")?.trim();
   if (!suppliedIdempotencyKey || !idempotencyKeyPattern.test(suppliedIdempotencyKey)) {
@@ -376,8 +420,8 @@ export async function POST(request: Request) {
 
         send({ type: "completed", id, progress: 100, durationMs, result });
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "The experiment failed.";
+        console.error("Experiment simulation failed", error);
+        const message = "The experiment failed.";
         await env.DB.prepare(
           "UPDATE experiment_runs SET status = 'failed', error = ? WHERE id = ?",
         )
@@ -392,7 +436,7 @@ export async function POST(request: Request) {
 
   return new Response(stream, {
     headers: {
-      "cache-control": "no-store",
+      "cache-control": PRIVATE_NO_STORE,
       "content-type": "application/x-ndjson; charset=utf-8",
       "x-content-type-options": "nosniff",
     },
