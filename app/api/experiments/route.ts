@@ -159,10 +159,24 @@ export async function POST(request: Request) {
     );
   }
 
-  const session = visitorSession(request);
+  const sessionToken = existingVisitorSession(request);
+  if (!sessionToken) {
+    const session = visitorSession(request);
+    return json(
+      { error: "Anonymous session initialized. Retry this request." },
+      {
+        status: 428,
+        headers: {
+          "set-cookie": session.setCookie ?? "",
+          "x-riftqueue-session-initialized": "true",
+        },
+      },
+    );
+  }
+
   let ownerKey: string;
   try {
-    ownerKey = await experimentOwnerKey(rateLimitConfiguration.secret, session.token);
+    ownerKey = await experimentOwnerKey(rateLimitConfiguration.secret, sessionToken);
   } catch (error) {
     console.error("Failed to derive experiment ownership state", error);
     return json(
@@ -364,7 +378,6 @@ export async function POST(request: Request) {
       "cache-control": "no-store",
       "content-type": "application/x-ndjson; charset=utf-8",
       "x-content-type-options": "nosniff",
-      ...(session.setCookie ? { "set-cookie": session.setCookie } : {}),
     },
   });
 }

@@ -222,7 +222,7 @@ test("downloads a saved experiment as CSV", async () => {
   assert.match(body, /"tail-aware","75","late","balanced"/);
 });
 
-test("creates an anonymous session cookie and stores only its ownership digest", async () => {
+test("initializes an anonymous session before creating a run or using quota", async () => {
   const database = databaseWithRateLimit();
   const response = await fetchWorker("/api/experiments", {
     database,
@@ -242,16 +242,96 @@ test("creates an anonymous session cookie and stores only its ownership digest",
     },
   });
 
-  assert.equal(response.status, 200);
+  assert.equal(response.status, 428);
+  assert.equal(response.headers.get("x-riftqueue-session-initialized"), "true");
   const setCookie = response.headers.get("set-cookie") ?? "";
   assert.match(setCookie, /^riftqueue_session=[0-9a-f-]+; Path=\//i);
   assert.match(setCookie, /HttpOnly; SameSite=Lax/);
   assert.doesNotMatch(setCookie, /; Secure/);
-  const sessionToken = setCookie.match(/^riftqueue_session=([^;]+)/)?.[1];
+  assert.deepEqual(await response.json(), {
+    error: "Anonymous session initialized. Retry this request.",
+  });
+  assert.equal(database.experimentRuns().length, 0);
+  assert.equal(database.rateLimitRows().length, 0);
+});
+
+test("retries an initialized session with one stored ownership digest", async () => {
+  const database = databaseWithRateLimit();
+  const request = {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "idempotency-key": "anonymous-session-test-key-0001",
+    },
+    body: JSON.stringify({
+      population: 75,
+      traffic: "late",
+      policy: "balanced",
+      seed: 4817,
+    }),
+  };
+  const options = {
+    database,
+    environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+    request,
+  };
+
+  const initialized = await fetchWorker("/api/experiments", options);
+  assert.equal(initialized.status, 428);
+  const sessionToken = initialized.headers
+    .get("set-cookie")
+    ?.match(/^riftqueue_session=([^;]+)/)?.[1];
   assert.ok(sessionToken);
+  await initialized.body?.cancel();
+
+  const created = await fetchWorker("/api/experiments", {
+    ...options,
+    request: {
+      ...request,
+      headers: { ...request.headers, cookie: visitorCookie(sessionToken) },
+    },
+  });
+  assert.equal(created.status, 200);
+  assert.equal(database.experimentRuns().length, 1);
+  assert.equal(database.rateLimitRows()[0].requestCount, 1);
   assert.match(database.experimentRuns()[0].ownerKey, /^[a-f0-9]{64}$/);
   assert.doesNotMatch(database.experimentRuns()[0].ownerKey, new RegExp(sessionToken));
-  await response.body?.cancel();
+  await created.body?.cancel();
+});
+
+test("concurrent first-visit requests only initialize sessions", async () => {
+  const database = databaseWithRateLimit();
+  const request = {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "idempotency-key": "concurrent-session-init-key-0001",
+    },
+    body: JSON.stringify({
+      population: 75,
+      traffic: "late",
+      policy: "balanced",
+      seed: 4817,
+    }),
+  };
+
+  const responses = await Promise.all([
+    fetchWorker("/api/experiments", {
+      database,
+      environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+      request,
+    }),
+    fetchWorker("/api/experiments", {
+      database,
+      environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+      request,
+    }),
+  ]);
+
+  assert.deepEqual(responses.map((response) => response.status), [428, 428]);
+  assert.equal(database.experimentRuns().length, 0);
+  assert.equal(database.rateLimitRows().length, 0);
+  await Promise.all(responses.map((response) => response.body?.cancel()));
 });
 
 test("scopes idempotency keys to anonymous sessions rather than network addresses", async () => {

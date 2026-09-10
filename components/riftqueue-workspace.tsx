@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Activity,
@@ -113,6 +113,41 @@ type ExperimentScenario = {
 type SavedExperiment = SavedRunSummary & {
   result: ExperimentComparison | null;
 };
+
+let sessionInitialization: Promise<Response | null> | null = null;
+let sessionInitialized = false;
+
+async function createExperimentRequest(requestOptions: RequestInit) {
+  if (sessionInitialized) {
+    const response = await fetch("/api/experiments", requestOptions);
+    if (response.status !== 428) return response;
+
+    await response.body?.cancel();
+    return fetch("/api/experiments", requestOptions);
+  }
+
+  const initializesSession = sessionInitialization === null;
+  if (initializesSession) {
+    sessionInitialization = fetch("/api/experiments", requestOptions)
+      .then(async (response) => {
+        if (response.status === 428) {
+          await response.body?.cancel();
+          return null;
+        }
+        return response;
+      })
+      .catch((error: unknown) => {
+        sessionInitialization = null;
+        throw error;
+      });
+  }
+
+  const initialResponse = await sessionInitialization;
+  sessionInitialized = true;
+  if (initializesSession && initialResponse) return initialResponse;
+
+  return fetch("/api/experiments", requestOptions);
+}
 
 async function fetchSavedExperiment(id: string): Promise<SavedExperiment> {
   const response = await fetch(`/api/experiments/${id}`, {
@@ -703,6 +738,7 @@ export function RiftQueueWorkspace({
       seed: 4817,
     }),
   );
+  const experimentStartInFlight = useRef(false);
   const baseline = comparison.baseline;
   const adaptive = comparison.adaptive;
   const result = algorithm === "baseline" ? baseline : adaptive;
@@ -763,6 +799,8 @@ export function RiftQueueWorkspace({
   }
 
   async function runExperiment() {
+    if (experimentStartInFlight.current) return;
+    experimentStartInFlight.current = true;
     setRunning(true);
     setRunProgress(0);
     setCompletedRunCount(0);
@@ -812,9 +850,9 @@ export function RiftQueueWorkspace({
       };
       let response: Response;
       try {
-        response = await fetch("/api/experiments", requestOptions);
+        response = await createExperimentRequest(requestOptions);
       } catch {
-        response = await fetch("/api/experiments", requestOptions);
+        response = await createExperimentRequest(requestOptions);
       }
       if (!response.ok || !response.body) {
         const body = (await response.json().catch(() => null)) as
@@ -886,6 +924,7 @@ export function RiftQueueWorkspace({
       await refreshRunHistory().catch(() => undefined);
     } finally {
       setRunning(false);
+      experimentStartInFlight.current = false;
     }
   }
 

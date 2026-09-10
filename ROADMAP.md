@@ -53,7 +53,8 @@ official reproducible synthetic scenarios and their reporting protocol.
 
 - [x] Add server-side rate limiting for anonymous experiment creation.
 - [x] Add idempotency protection for duplicate run requests.
-- [x] Scope public saved-run history so visitors do not share one noisy global feed.
+- [x] Scope public saved-run history so visitors do not share one noisy global feed,
+  including a no-side-effect first-visit session handshake.
 - [ ] Add bounded retention for completed and failed experiment records.
 - [ ] Audit API errors, response sizes, and expensive inputs.
 - [ ] Complete the public-release checklist before changing site access.
