@@ -36,7 +36,11 @@
     browser shares that initialization, then retries with the same idempotency
     key. D1 stores only an HMAC-derived ownership key, and list, detail, and
     export routes filter by it so visitors cannot access each other's runs.
-11. Server routes stream progress, persist completed experiment records in D1, and
+11. Before an authenticated creation reserves a run, a bounded D1 cleanup batch
+    removes terminal records past the configured retention window and abandoned
+    `creating` reservations. The status-and-created-time index supports those
+    predicates; `queued` and `running` records are never cleanup candidates.
+12. Server routes stream progress, persist completed experiment records in D1, and
     generate JSON or CSV exports.
 
 ## Trust boundaries

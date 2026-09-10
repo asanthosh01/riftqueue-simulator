@@ -143,18 +143,43 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
     },
     experimentRuns() {
       return database
-        .prepare("SELECT id, idempotency_key AS idempotencyKey, owner_key AS ownerKey FROM experiment_runs")
+        .prepare(
+          `SELECT id, created_at AS createdAt, status,
+                  idempotency_key AS idempotencyKey, owner_key AS ownerKey
+             FROM experiment_runs
+            ORDER BY id`,
+        )
         .all();
     },
-    seedCompletedRun({ id, ownerKey: runOwnerKey, seed }) {
+    seedExperimentRun({
+      id,
+      status,
+      createdAt,
+      ownerKey: runOwnerKey = ownerKey(visitorOneToken),
+      seed = 4817,
+    }) {
       database
         .prepare(
           `INSERT INTO experiment_runs
             (id, created_at, status, population, traffic, policy, seed, owner_key, runs,
-             matches_per_run, progress, result_json)
-           VALUES (?, ?, 'completed', 75, 'late', 'balanced', ?, ?, 8, 500, 100, ?)`,
+             matches_per_run, progress)
+           VALUES (?, ?, ?, 75, 'late', 'balanced', ?, ?, 8, 500, 0)`,
         )
-        .run(id, Date.now(), seed, runOwnerKey, JSON.stringify(savedComparison));
+        .run(id, createdAt, status, seed, runOwnerKey);
+    },
+    seedCompletedRun({ id, ownerKey: runOwnerKey, seed }) {
+      this.seedExperimentRun({
+        id,
+        status: "completed",
+        createdAt: Date.now(),
+        ownerKey: runOwnerKey,
+        seed,
+      });
+      database
+        .prepare(
+          "UPDATE experiment_runs SET progress = 100, result_json = ? WHERE id = ?",
+        )
+        .run(JSON.stringify(savedComparison), id);
     },
     prepare(query) {
       return {
@@ -442,6 +467,148 @@ test("isolates anonymous visitors from other saved-run histories and exports", a
   assert.equal(otherExport.status, 404);
 });
 
+test("retains recent records, removes expired terminal records, and clears abandoned creation", async () => {
+  const database = databaseWithRateLimit();
+  const day = 24 * 60 * 60 * 1_000;
+  const now = 40 * day;
+  database.seedExperimentRun({
+    id: "recent-completed",
+    status: "completed",
+    createdAt: now - day + 1,
+  });
+  database.seedExperimentRun({
+    id: "recent-failed",
+    status: "failed",
+    createdAt: now - day + 1,
+  });
+  database.seedExperimentRun({
+    id: "expired-completed",
+    status: "completed",
+    createdAt: now - day,
+  });
+  database.seedExperimentRun({
+    id: "expired-failed",
+    status: "failed",
+    createdAt: now - day,
+  });
+  database.seedExperimentRun({
+    id: "abandoned-creating",
+    status: "creating",
+    createdAt: now - 15 * 60 * 1_000,
+  });
+  database.seedExperimentRun({
+    id: "fresh-creating",
+    status: "creating",
+    createdAt: now - 15 * 60 * 1_000 + 1,
+  });
+  database.seedExperimentRun({
+    id: "old-queued",
+    status: "queued",
+    createdAt: now - 90 * day,
+  });
+  database.seedExperimentRun({
+    id: "old-running",
+    status: "running",
+    createdAt: now - 90 * day,
+  });
+
+  const originalDateNow = Date.now;
+  Date.now = () => now;
+  try {
+    const response = await fetchWorker("/api/experiments", {
+      database,
+      environment: {
+        EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret,
+        EXPERIMENT_RETENTION_DAYS: "1",
+        EXPERIMENT_ABANDONED_CREATING_SECONDS: "900",
+        EXPERIMENT_RETENTION_CLEANUP_BATCH_SIZE: "10",
+      },
+      request: {
+        method: "POST",
+        headers: {
+          cookie: visitorCookie(visitorOneToken),
+          "content-type": "application/json",
+          "idempotency-key": "retention-eligibility-test-key",
+        },
+        body: JSON.stringify({
+          population: 75,
+          traffic: "late",
+          policy: "balanced",
+          seed: 4817,
+        }),
+      },
+    });
+    assert.equal(response.status, 200);
+    await response.body?.cancel();
+  } finally {
+    Date.now = originalDateNow;
+  }
+
+  const remainingIds = database.experimentRuns().map((run) => run.id);
+  for (const id of [
+    "fresh-creating",
+    "old-queued",
+    "old-running",
+    "recent-completed",
+    "recent-failed",
+  ]) {
+    assert.ok(remainingIds.includes(id));
+  }
+  assert.ok(!remainingIds.includes("expired-completed"));
+  assert.ok(!remainingIds.includes("expired-failed"));
+  assert.ok(!remainingIds.includes("abandoned-creating"));
+  assert.equal(remainingIds.length, 6);
+});
+
+test("limits each experiment retention cleanup to its configured batch size", async () => {
+  const database = databaseWithRateLimit();
+  const day = 24 * 60 * 60 * 1_000;
+  const now = 40 * day;
+  for (const id of ["expired-one", "expired-two", "expired-three"]) {
+    database.seedExperimentRun({
+      id,
+      status: "completed",
+      createdAt: now - day,
+    });
+  }
+
+  const originalDateNow = Date.now;
+  Date.now = () => now;
+  try {
+    const response = await fetchWorker("/api/experiments", {
+      database,
+      environment: {
+        EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret,
+        EXPERIMENT_RETENTION_DAYS: "1",
+        EXPERIMENT_RETENTION_CLEANUP_BATCH_SIZE: "2",
+      },
+      request: {
+        method: "POST",
+        headers: {
+          cookie: visitorCookie(visitorOneToken),
+          "content-type": "application/json",
+          "idempotency-key": "retention-batch-limit-test-key",
+        },
+        body: JSON.stringify({
+          population: 75,
+          traffic: "late",
+          policy: "balanced",
+          seed: 4817,
+        }),
+      },
+    });
+    assert.equal(response.status, 200);
+    await response.body?.cancel();
+  } finally {
+    Date.now = originalDateNow;
+  }
+
+  assert.equal(
+    database.experimentRuns().filter((run) => run.id.startsWith("expired-")).length,
+    1,
+  );
+});
+
 test("rate limits repeated experiment creation without storing a raw address", async () => {
   const database = databaseWithRateLimit();
   database.seedExpiredRateLimit("expired-bucket", 939_999);
@@ -659,4 +826,36 @@ test("fails closed when rate-limit configuration is invalid", async () => {
   assert.deepEqual(await response.json(), {
     error: "Experiment creation is temporarily unavailable.",
   });
+});
+
+test("fails closed when retention configuration is invalid", async () => {
+  const database = databaseWithRateLimit();
+  const response = await fetchWorker("/api/experiments", {
+    database,
+    environment: {
+      EXPERIMENT_RATE_LIMIT_SECRET: "test-only-secret",
+      EXPERIMENT_RETENTION_CLEANUP_BATCH_SIZE: "501",
+    },
+    request: {
+      method: "POST",
+      headers: {
+        cookie: visitorCookie(visitorOneToken),
+        "content-type": "application/json",
+        "idempotency-key": "invalid-retention-test-key",
+      },
+      body: JSON.stringify({
+        population: 75,
+        traffic: "late",
+        policy: "balanced",
+        seed: 4817,
+      }),
+    },
+  });
+
+  assert.equal(response.status, 503);
+  assert.deepEqual(await response.json(), {
+    error: "Experiment creation is temporarily unavailable.",
+  });
+  assert.equal(database.experimentRuns().length, 0);
+  assert.equal(database.rateLimitRows().length, 0);
 });

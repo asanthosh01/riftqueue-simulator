@@ -25,6 +25,7 @@ export const experimentRuns = sqliteTable(
     index("idx_experiment_runs_created_at").on(table.createdAt),
     uniqueIndex("idx_experiment_runs_idempotency_key").on(table.idempotencyKey),
     index("idx_experiment_runs_owner_created_at").on(table.ownerKey, table.createdAt),
+    index("idx_experiment_runs_status_created_at").on(table.status, table.createdAt),
   ],
 );
 
