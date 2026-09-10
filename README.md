@@ -97,6 +97,9 @@ and variables in the deployment environment (or `.dev.vars` locally):
 EXPERIMENT_RATE_LIMIT_SECRET=<long-random-secret>
 EXPERIMENT_RATE_LIMIT_MAX_REQUESTS=3
 EXPERIMENT_RATE_LIMIT_WINDOW_SECONDS=300
+EXPERIMENT_RETENTION_DAYS=30
+EXPERIMENT_ABANDONED_CREATING_SECONDS=900
+EXPERIMENT_RETENTION_CLEANUP_BATCH_SIZE=100
 ```
 
 The limit and window default to 3 requests per 300 seconds. Missing or invalid
@@ -105,6 +108,14 @@ protection. Client addresses are HMAC-derived into an opaque D1 bucket key and
 are never stored or returned. If `CF-Connecting-IP` is absent, requests share
 an `unknown-client` bucket; do not remove that Cloudflare edge header unless
 this shared fallback is acceptable.
+
+On authenticated experiment creation, RiftQueue removes one bounded batch of
+expired records using D1's status-and-created-time index. Completed and failed
+runs are retained for 30 days by default; a `creating` record is removed after
+15 minutes because it represents an interrupted reservation, not active work.
+`queued` and `running` records are always preserved. All three retention
+settings must be positive integers; cleanup batches cannot exceed 500 records.
+Invalid values return `503` rather than silently disabling cleanup.
 
 Every experiment creation request also requires an `Idempotency-Key` header.
 The browser generates one automatically. Retrying the same key and scenario

@@ -1,0 +1,1 @@
+CREATE INDEX `idx_experiment_runs_status_created_at` ON `experiment_runs` (`status`,`created_at`);

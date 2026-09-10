@@ -29,6 +29,13 @@
       "when": 1789018589741,
       "tag": "0003_burly_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1789020236631,
+      "tag": "0004_known_veda",
+      "breakpoints": true
     }
   ]
 }

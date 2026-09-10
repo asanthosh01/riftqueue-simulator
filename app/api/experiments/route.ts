@@ -18,6 +18,10 @@ import {
   existingVisitorSession,
   visitorSession,
 } from "@/lib/experiment-session";
+import {
+  cleanupExpiredExperimentRuns,
+  getExperimentRetentionConfiguration,
+} from "@/lib/experiment-retention";
 
 const experimentRequest = z.object({
   population: z.union([
@@ -171,6 +175,19 @@ export async function POST(request: Request) {
           "x-riftqueue-session-initialized": "true",
         },
       },
+    );
+  }
+
+  try {
+    await cleanupExpiredExperimentRuns({
+      database: env.DB,
+      configuration: getExperimentRetentionConfiguration(env),
+    });
+  } catch (error) {
+    console.error("Failed to clean up expired experiment runs", error);
+    return json(
+      { error: "Experiment creation is temporarily unavailable." },
+      { status: 503 },
     );
   }
 
