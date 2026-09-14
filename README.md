@@ -68,7 +68,7 @@ and trust boundaries.
 
 ## Run Locally
 
-Requirements: Node.js `>=22.13.0`.
+Requirements: Node.js `>=22.15.0`.
 
 ```bash
 npm ci
@@ -140,7 +140,7 @@ HTTPS.
 ## Validate Changes
 
 GitHub Actions runs the Linux validation below for every pull request and push
-to `main`. It uses Ubuntu, Node 22.13.0, npm's dependency cache, local-only D1
+to `main`. It uses Ubuntu, Node 22.15.0, npm's dependency cache, local-only D1
 state, and read-only repository permissions; it does not receive deployment
 credentials or production secrets.
 
