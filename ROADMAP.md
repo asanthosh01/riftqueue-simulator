@@ -67,8 +67,11 @@ official reproducible synthetic scenarios and their reporting protocol.
 - [x] Add GitHub Actions for Node.js `22.15.0` lint, local D1 verification,
   build, simulation invariants, and API tests on pull requests and pushes to
   `main`.
-- [ ] Write the recruiter-facing README and technical case study.
-- [ ] Add a concise architecture diagram and reproducibility instructions.
+- [x] Write a recruiter-facing README with the high-ELO player motivation,
+  validated synthetic findings, technical decisions, limitations, setup, and
+  CI information.
+- [x] Add a concise README architecture diagram and reproducibility links to
+  the locked benchmark artifacts.
 - [ ] Pin the repository and add the public demo to the portfolio and resume.
 
 ## Research backlog
