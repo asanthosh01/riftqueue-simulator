@@ -122,6 +122,13 @@ The browser generates one automatically. Retrying the same key and scenario
 returns the existing run instead of starting another simulation; the server
 stores only an HMAC-derived key, never the supplied value or a raw address.
 
+The experiment endpoint accepts only `application/json` bodies up to 1 KiB.
+Its accepted scenario fields are validated server-side, and each accepted run
+always uses the fixed 8-trial-by-500-match synthetic workload; clients cannot
+increase compute by sending extra fields. Saved-run detail and JSON/CSV export
+responses use `Cache-Control: private, no-store` so browser or intermediary
+caches do not share session-owned data.
+
 Saved runs belong to an anonymous, `HttpOnly` browser session. On a first
 experiment attempt, RiftQueue establishes that session without creating a run
 or using rate-limit quota, then retries with the same idempotency key. D1 stores

@@ -145,7 +145,8 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
       return database
         .prepare(
           `SELECT id, created_at AS createdAt, status,
-                  idempotency_key AS idempotencyKey, owner_key AS ownerKey
+                  idempotency_key AS idempotencyKey, owner_key AS ownerKey,
+                  runs, matches_per_run AS matchesPerRun
              FROM experiment_runs
             ORDER BY id`,
         )
@@ -157,17 +158,23 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
       createdAt,
       ownerKey: runOwnerKey = ownerKey(visitorOneToken),
       seed = 4817,
+      error: errorMessage = null,
     }) {
       database
         .prepare(
           `INSERT INTO experiment_runs
             (id, created_at, status, population, traffic, policy, seed, owner_key, runs,
-             matches_per_run, progress)
-           VALUES (?, ?, ?, 75, 'late', 'balanced', ?, ?, 8, 500, 0)`,
+             matches_per_run, progress, error)
+           VALUES (?, ?, ?, 75, 'late', 'balanced', ?, ?, 8, 500, 0, ?)`,
         )
-        .run(id, createdAt, status, seed, runOwnerKey);
+        .run(id, createdAt, status, seed, runOwnerKey, errorMessage);
     },
-    seedCompletedRun({ id, ownerKey: runOwnerKey, seed }) {
+    seedCompletedRun({
+      id,
+      ownerKey: runOwnerKey,
+      seed,
+      resultJson = JSON.stringify(savedComparison),
+    }) {
       this.seedExperimentRun({
         id,
         status: "completed",
@@ -179,7 +186,7 @@ function databaseWithRateLimit({ synchronizeInitialIdempotencyReads = false } = 
         .prepare(
           "UPDATE experiment_runs SET progress = 100, result_json = ? WHERE id = ?",
         )
-        .run(JSON.stringify(savedComparison), id);
+        .run(resultJson, id);
     },
     prepare(query) {
       return {
@@ -221,6 +228,7 @@ test("downloads a saved experiment as JSON", async () => {
   );
 
   assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.match(response.headers.get("content-type") ?? "", /application\/json/);
   assert.match(
     response.headers.get("content-disposition") ?? "",
@@ -241,6 +249,7 @@ test("downloads a saved experiment as CSV", async () => {
   );
 
   assert.equal(response.status, 200);
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.match(response.headers.get("content-type") ?? "", /text\/csv/);
   const body = await response.text();
   assert.match(body, /algorithm,population,traffic,policy/);
@@ -446,6 +455,7 @@ test("isolates anonymous visitors from other saved-run histories and exports", a
     request: visitorOne,
   });
   assert.equal(ownRun.status, 200);
+  assert.equal(ownRun.headers.get("cache-control"), "private, no-store");
 
   const otherRun = await fetchWorker("/api/experiments/visitor-one-run", {
     database,
@@ -459,12 +469,174 @@ test("isolates anonymous visitors from other saved-run histories and exports", a
     { database, environment, request: visitorOne },
   );
   assert.equal(ownExport.status, 200);
+  assert.equal(ownExport.headers.get("cache-control"), "private, no-store");
 
   const otherExport = await fetchWorker(
     "/api/experiments/visitor-one-run/download?format=json",
     { database, environment, request: visitorTwo },
   );
   assert.equal(otherExport.status, 404);
+});
+
+test("rejects non-JSON and oversized experiment requests before side effects", async () => {
+  const database = databaseWithRateLimit();
+  const environment = { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret };
+  const commonHeaders = {
+    cookie: visitorCookie(visitorOneToken),
+    "idempotency-key": "request-safety-test-key-0001",
+  };
+
+  const wrongType = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: {
+      method: "POST",
+      headers: { ...commonHeaders, "content-type": "text/plain" },
+      body: JSON.stringify({ population: 75, traffic: "late", policy: "balanced", seed: 4817 }),
+    },
+  });
+  assert.equal(wrongType.status, 415);
+  assert.deepEqual(await wrongType.json(), {
+    error: "Send the experiment request as application/json.",
+  });
+
+  const malformed = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: {
+      method: "POST",
+      headers: { ...commonHeaders, "content-type": "application/json" },
+      body: "{",
+    },
+  });
+  assert.equal(malformed.status, 400);
+  assert.deepEqual(await malformed.json(), {
+    error: "The experiment request was not valid JSON.",
+  });
+
+  const oversized = await fetchWorker("/api/experiments", {
+    database,
+    environment,
+    request: {
+      method: "POST",
+      headers: { ...commonHeaders, "content-type": "application/json" },
+      body: `{"payload":"${"x".repeat(1_024)}"}`,
+    },
+  });
+  assert.equal(oversized.status, 413);
+  assert.deepEqual(await oversized.json(), {
+    error: "The experiment request is too large.",
+  });
+  assert.equal(database.experimentRuns().length, 0);
+  assert.equal(database.rateLimitRows().length, 0);
+});
+
+test("keeps the persisted experiment workload fixed and server-controlled", async () => {
+  const database = databaseWithRateLimit();
+  const rejected = await fetchWorker("/api/experiments", {
+    database,
+    environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+    request: {
+      method: "POST",
+      headers: {
+        cookie: visitorCookie(visitorOneToken),
+        "content-type": "application/json",
+        "idempotency-key": "fixed-workload-test-key-0001",
+      },
+      body: JSON.stringify({
+        population: 75,
+        traffic: "late",
+        policy: "balanced",
+        seed: 4817,
+        runs: 999_999,
+        matchesPerRun: 999_999,
+      }),
+    },
+  });
+
+  assert.equal(rejected.status, 400);
+  assert.equal(database.experimentRuns().length, 0);
+
+  const response = await fetchWorker("/api/experiments", {
+    database,
+    environment: { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret },
+    request: {
+      method: "POST",
+      headers: {
+        cookie: visitorCookie(visitorOneToken),
+        "content-type": "application/json",
+        "idempotency-key": "fixed-workload-test-key-0002",
+      },
+      body: JSON.stringify({
+        population: 75,
+        traffic: "late",
+        policy: "balanced",
+        seed: 4817,
+      }),
+    },
+  });
+
+  assert.equal(response.status, 200);
+  await response.body?.cancel();
+  const [run] = database.experimentRuns();
+  assert.equal(run.runs, 8);
+  assert.equal(run.matchesPerRun, 500);
+});
+
+test("returns a safe private error for malformed saved experiment data", async () => {
+  const database = databaseWithRateLimit();
+  database.seedCompletedRun({
+    id: "malformed-run",
+    ownerKey: ownerKey(visitorOneToken),
+    seed: 4817,
+    resultJson: '{"internal":"secret-value"',
+  });
+  const request = { headers: { cookie: visitorCookie(visitorOneToken) } };
+  const environment = { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret };
+
+  const detail = await fetchWorker("/api/experiments/malformed-run", {
+    database,
+    environment,
+    request,
+  });
+  assert.equal(detail.status, 500);
+  assert.equal(detail.headers.get("cache-control"), "private, no-store");
+  assert.deepEqual(await detail.json(), { error: "Saved run is unavailable." });
+
+  const exportResponse = await fetchWorker(
+    "/api/experiments/malformed-run/download?format=json",
+    { database, environment, request },
+  );
+  assert.equal(exportResponse.status, 500);
+  assert.equal(exportResponse.headers.get("cache-control"), "private, no-store");
+  assert.deepEqual(await exportResponse.json(), { error: "Saved run is unavailable." });
+});
+
+test("does not return stored failure details from a saved run", async () => {
+  const database = databaseWithRateLimit();
+  database.seedExperimentRun({
+    id: "failed-run",
+    status: "failed",
+    createdAt: Date.now(),
+    ownerKey: ownerKey(visitorOneToken),
+    error: "D1 failure: secret database detail",
+  });
+  const request = { headers: { cookie: visitorCookie(visitorOneToken) } };
+  const environment = { EXPERIMENT_RATE_LIMIT_SECRET: sessionSecret };
+
+  const history = await fetchWorker("/api/experiments", { database, environment, request });
+  const historyBody = await history.json();
+  assert.equal(historyBody.runs[0].error, "The experiment failed.");
+  assert.doesNotMatch(JSON.stringify(historyBody), /secret database detail/);
+
+  const detail = await fetchWorker("/api/experiments/failed-run", {
+    database,
+    environment,
+    request,
+  });
+  const detailBody = await detail.json();
+  assert.equal(detailBody.error, "The experiment failed.");
+  assert.doesNotMatch(JSON.stringify(detailBody), /secret database detail/);
 });
 
 test("retains recent records, removes expired terminal records, and clears abandoned creation", async () => {

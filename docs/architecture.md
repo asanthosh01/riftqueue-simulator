@@ -43,6 +43,18 @@
 12. Server routes stream progress, persist completed experiment records in D1, and
     generate JSON or CSV exports.
 
+## API safety boundaries
+
+- `POST /api/experiments` accepts only `application/json` request bodies up to
+  1 KiB, validates the fixed scenario schema, and rejects client attempts to
+  supply workload controls. The server always runs 8 trials of 500 matches.
+- List, detail, and export routes derive the anonymous ownership key before
+  querying D1. Missing or mismatched ownership has the same not-found response
+  as an absent run.
+- Session-owned responses, including JSON and CSV exports, use `Cache-Control:
+  private, no-store`. Database, parsing, and configuration failures return
+  generic JSON errors and are logged server-side only.
+
 ## Trust boundaries
 
 - All population, rank-distribution, and search-expansion values are synthetic.

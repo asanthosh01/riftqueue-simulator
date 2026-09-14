@@ -17,8 +17,8 @@ queue-time versus match-quality tradeoff in sparse, high-ELO matchmaking.
 
 The benchmark plan, runner, official artifact, paired validation suite, and
 recruiter-readable synthetic findings and website presentation are complete.
-The exact next recommended task is to audit API errors, response sizes, and
-expensive inputs before considering a public demo.
+The exact next recommended task is to complete the public-release checklist
+before considering a public demo.
 
 ## Completed foundation
 
@@ -57,7 +57,8 @@ official reproducible synthetic scenarios and their reporting protocol.
   including a no-side-effect first-visit session handshake.
 - [x] Add bounded retention for completed and failed experiment records, with
   bounded D1 cleanup batches and abandoned-creation recovery.
-- [ ] Audit API errors, response sizes, and expensive inputs.
+- [x] Audit API errors, response sizes, and expensive inputs, including request
+  limits, fixed workloads, private caching, and safe API errors.
 - [ ] Complete the public-release checklist before changing site access.
 
 ## Portfolio phase
