@@ -139,17 +139,28 @@ HTTPS.
 
 ## Validate Changes
 
+GitHub Actions runs the Linux validation below for every pull request and push
+to `main`. It uses Ubuntu, Node 22.13.0, npm's dependency cache, local-only D1
+state, and read-only repository permissions; it does not receive deployment
+credentials or production secrets.
+
 Linux or Codex cloud:
 
 ```bash
+npm ci
 npm run lint
+npm run db:migrate:local
+npm run db:inspect:local
 npm test
 ```
 
 macOS or another environment without GNU `timeout`:
 
 ```bash
+npm ci
 npm run lint
+npm run db:migrate:local
+npm run db:inspect:local
 npm run test:local
 ```
 

@@ -64,7 +64,8 @@ official reproducible synthetic scenarios and their reporting protocol.
 ## Portfolio phase
 
 - [ ] Create a public GitHub repository.
-- [ ] Add GitHub Actions for build, lint, simulation invariants, and API tests.
+- [x] Add GitHub Actions for lint, local D1 verification, build, simulation
+  invariants, and API tests on pull requests and pushes to `main`.
 - [ ] Write the recruiter-facing README and technical case study.
 - [ ] Add a concise architecture diagram and reproducibility instructions.
 - [ ] Pin the repository and add the public demo to the portfolio and resume.
